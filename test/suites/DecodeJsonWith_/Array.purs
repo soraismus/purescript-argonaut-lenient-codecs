@@ -1,4 +1,4 @@
-module Test.Suites.DecodeJsonWith'.Array
+module Test.Suites.DecodeJsonWithPrime.Array
   ( _suite
   ) where
 

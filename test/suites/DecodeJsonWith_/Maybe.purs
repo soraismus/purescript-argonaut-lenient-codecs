@@ -1,4 +1,4 @@
-module Test.Suites.DecodeJsonWith'.Maybe
+module Test.Suites.DecodeJsonWithPrime.Maybe
   ( _suite
   ) where
 

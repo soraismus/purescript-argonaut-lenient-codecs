@@ -20,7 +20,7 @@ import Data.Tuple (Tuple(Tuple), uncurry)
 import Effect (Effect)
 import Test.Suites.DecodeJsonPer (_suite) as DecodeJsonPer
 import Test.Suites.DecodeJsonWith (_suite) as DecodeJsonWith
-import Test.Suites.DecodeJsonWith' (_suite) as DecodeJsonWith'
+import Test.Suites.DecodeJsonWithPrime (_suite) as DecodeJsonWith'
 import Test.Suites.FlexDecodeJson (_suite) as FlexDecodeJson
 import Test.Suites.LenientDecodeJson (_suite) as LenientDecodeJson
 import Test.Unit (Test, suite, test)

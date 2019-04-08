@@ -1,17 +1,15 @@
-module Test.Suites.DecodeJsonWith'
+module Test.Suites.DecodeJsonWithPrime
   ( _suite
   ) where
 
-import Prelude (pure, unit)
-
 import Prelude (discard)
 
-import Test.Suites.DecodeJsonWith'.Array (_suite) as Array
-import Test.Suites.DecodeJsonWith'.Maybe (_suite) as Maybe
+import Test.Suites.DecodeJsonWithPrime.Array (_suite) as Array
+import Test.Suites.DecodeJsonWithPrime.Maybe (_suite) as Maybe
 import Test.Unit (TestSuite, suite)
 
 _suite :: TestSuite
 _suite =
-  suite "decodeJsonWith'" (pure unit)
-    -- Maybe._suite
-    -- Array._suite
+  suite "decodeJsonWith'" do
+    Maybe._suite
+    Array._suite
