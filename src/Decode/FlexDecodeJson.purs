@@ -97,8 +97,8 @@ instance __flexDecodeJsonWithNil
 
 instance __flexDecodeJsonWithCons
   :: ( Bind g
-     , Cases g dl r
-     , Cases g dl' r'
+     , Cases dl r
+     , Cases dl' r'
      , Cons s (f v) r' r
      , Cons s dv dr' dr
      , FlexDecodeJsonWith_ g dl' dr' l' r'
@@ -147,7 +147,7 @@ instance __flexDecodeJsonWithCons
         report $ insert sProxy empty rest
 
 class
-  ( Cases f l1 r0
+  ( Cases l1 r0
   , RowToList r1 l1
   ) <=
   FlexDecodeJsonWith
@@ -159,7 +159,7 @@ class
     flexDecodeJsonWith' :: Record r1 -> Json -> f (Record r0)
 
 instance flexDecodeJsonWithDecodeJsonWith_
-  :: ( Cases f l1 r0
+  :: ( Cases l1 r0
      , FlexDecodeJsonWith_ f l1 r1 l0 r0
      , RowToList r0 l0
      , RowToList r1 l1

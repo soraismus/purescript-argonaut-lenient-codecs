@@ -44,8 +44,8 @@ instance lenientDecodeJsonPer_Nil
 
 instance lenientDecodeJsonPer_Cons_Plus
   :: ( Bind f
-     , Cases f dl r
-     , Cases f dl' r'
+     , Cases dl r
+     , Cases dl' r'
      , Cons s (g v) r' r
      , Cons s dv dr' dr
      , LenientDecodeJsonPer_ f dl' dr' l' r'
@@ -95,8 +95,8 @@ instance lenientDecodeJsonPer_Cons_Plus
 
 else instance lenientDecodeJsonPer_Cons_nonPlus
   :: ( Bind f
-     , Cases f dl r
-     , Cases f dl' r'
+     , Cases dl r
+     , Cases dl' r'
      , Cons s v r' r
      , Cons s dv dr' dr
      , LenientDecodeJsonPer_ f dl' dr' l' r'
@@ -144,7 +144,7 @@ else instance lenientDecodeJsonPer_Cons_nonPlus
         reportError $ getMissingFieldErrorMessage fieldName
 
 class
-  ( Cases f l1 r0
+  ( Cases l1 r0
   , RowToList r1 l1
   ) <=
   LenientDecodeJsonPer
@@ -156,7 +156,7 @@ class
     lenientDecodeJsonPer :: Record r1 -> Json -> f (Record r0)
 
 instance lenientDecodeJsonPerLenientDecodeJsonPer_
-  :: ( Cases f l1 r0
+  :: ( Cases l1 r0
      , LenientDecodeJsonPer_ f l1 r1 l0 r0
      , RowToList r0 l0
      , RowToList r1 l1

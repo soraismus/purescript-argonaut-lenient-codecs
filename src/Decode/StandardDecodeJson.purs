@@ -61,8 +61,8 @@ instance __decodeJsonWithNil
 
 instance __decodeJsonWithCons
   :: ( Bind f
-     , Cases f dl r
-     , Cases f dl' r'
+     , Cases dl r
+     , Cases dl' r'
      , Cons s v r' r
      , Cons s dv dr' dr
      , DecodeJsonWith_ f dl' dr' l' r'
@@ -110,7 +110,7 @@ instance __decodeJsonWithCons
         reportError $ getMissingFieldErrorMessage fieldName
 
 class
-  ( Cases f l1 r0
+  ( Cases l1 r0
   , RowToList r1 l1
   ) <=
   DecodeJsonWith
@@ -122,7 +122,7 @@ class
     decodeJsonWith' :: Record r1 -> Json -> f (Record r0)
 
 instance decodeJsonWithDecodeJsonWith_
-  :: ( Cases f l1 r0
+  :: ( Cases l1 r0
      , DecodeJsonWith_ f l1 r1 l0 r0
      , RowToList r0 l0
      , RowToList r1 l1

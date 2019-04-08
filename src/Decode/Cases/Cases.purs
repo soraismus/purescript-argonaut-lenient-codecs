@@ -1,20 +1,18 @@
 module Data.Argonaut.Decode.Cases
   ( class Cases
-  )
-  where
+  ) where
 
 import Type.Row (class Cons, Cons, Nil, kind RowList)
 
 class Cases
-  (f :: Type -> Type)
   (l :: RowList)
   (r :: # Type)
   | l -> r
 
-instance casesNil :: Cases f Nil ()
+instance casesNil :: Cases Nil ()
 
 instance casesCons
   :: ( Cons s v r' r
-     , Cases f l' r'
+     , Cases l' r'
      )
-  => Cases f (Cons s tv l') r
+  => Cases (Cons s tv l') r

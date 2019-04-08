@@ -1,4 +1,9 @@
-module Data.Argonaut.Decode.Spec where
+module Data.Argonaut.Decode.Per
+  ( class DecodeJsonPer
+  , class DecodeJsonPer_
+  , decodeJsonPer
+  , decodeJsonPer_
+  ) where
 
 import Prelude (class Bind, bind, ($))
 
@@ -43,8 +48,8 @@ instance decodeJsonPer_Nil
 
 instance decodeJsonPer_Cons
   :: ( Bind f
-     , Cases f dl r
-     , Cases f dl' r'
+     , Cases dl r
+     , Cases dl' r'
      , Cons s v r' r
      , Cons s dv dr' dr
      , DecodeJsonPer_ f dl' dr' l' r'
@@ -92,7 +97,7 @@ instance decodeJsonPer_Cons
         reportError $ getMissingFieldErrorMessage fieldName
 
 class
-  ( Cases f l1 r0
+  ( Cases l1 r0
   , RowToList r1 l1
   ) <=
   DecodeJsonPer
@@ -104,7 +109,7 @@ class
     decodeJsonPer :: Record r1 -> Json -> f (Record r0)
 
 instance decodeJsonPerDecodeJsonPer_
-  :: ( Cases f l1 r0
+  :: ( Cases l1 r0
      , DecodeJsonPer_ f l1 r1 l0 r0
      , RowToList r0 l0
      , RowToList r1 l1
