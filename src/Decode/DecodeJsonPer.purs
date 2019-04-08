@@ -3,7 +3,7 @@ module Data.Argonaut.Decode.Spec where
 import Prelude (class Bind, bind, ($))
 
 import Data.Argonaut.Core (Json)
-import Data.Argonaut.Decode.Cases
+import Data.Argonaut.Decode.Cases (class Cases)
 import Data.Argonaut.Utils (getMissingFieldErrorMessage, reportJson)
 import Data.Maybe (Maybe(Just, Nothing))
 import Data.Status.Class (class Status, report, reportError)
@@ -42,12 +42,12 @@ instance decodeJsonPer_Nil
   decodeJsonPer_ _ _ _ _ = report {}
 
 instance decodeJsonPer_Cons
-  :: ( Bind g
-     , Cases g dl r
-     , Cases g dl' r'
+  :: ( Bind f
+     , Cases f dl r
+     , Cases f dl' r'
      , Cons s v r' r
      , Cons s dv dr' dr
-     , DecodeJsonPer_ g dl' dr' l' r'
+     , DecodeJsonPer_ f dl' dr' l' r'
      , IsSymbol s
      , Lacks s r'
      , Lacks s dr'
@@ -55,10 +55,10 @@ instance decodeJsonPer_Cons
      , RowToList r' l'
      , RowToList dr dl
      , RowToList dr' dl'
-     , Status g
-     , TypeEquals dv (Json -> g v)
+     , Status f
+     , TypeEquals dv (Json -> f v)
      )
-  => DecodeJsonPer_ g (Cons s dv dl') dr (Cons s v l') r
+  => DecodeJsonPer_ f (Cons s dv dl') dr (Cons s v l') r
   where
   decodeJsonPer_ _ _ decoderRecord object = do
     let
@@ -68,7 +68,7 @@ instance decodeJsonPer_Cons
       fieldName :: String
       fieldName = reflectSymbol sProxy
 
-      decoder :: Json -> g v
+      decoder :: Json -> f v
       decoder = to $ get sProxy decoderRecord
 
       -- To prevent unnecessary creation of intermediate decoder records,

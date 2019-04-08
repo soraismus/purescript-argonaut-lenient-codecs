@@ -4,7 +4,7 @@ import Prelude (class Bind, bind, ($))
 
 import Control.Plus (class Plus, empty)
 import Data.Argonaut.Core (Json)
-import Data.Argonaut.Decode.Cases
+import Data.Argonaut.Decode.Cases (class Cases)
 import Data.Argonaut.Utils (getMissingFieldErrorMessage, reportJson)
 import Data.Maybe (Maybe(Just, Nothing))
 import Data.Status.Class (class Status, report, reportError)
@@ -43,24 +43,24 @@ instance lenientDecodeJsonPer_Nil
   lenientDecodeJsonPer_ _ _ _ _ = report {}
 
 instance lenientDecodeJsonPer_Cons_Plus
-  :: ( Bind g
-     , Cases g dl r
-     , Cases g dl' r'
-     , Cons s (f v) r' r
+  :: ( Bind f
+     , Cases f dl r
+     , Cases f dl' r'
+     , Cons s (g v) r' r
      , Cons s dv dr' dr
-     , LenientDecodeJsonPer_ g dl' dr' l' r'
+     , LenientDecodeJsonPer_ f dl' dr' l' r'
      , IsSymbol s
      , Lacks s r'
      , Lacks s dr'
-     , Plus f
+     , Plus g
      , RowToList r l
      , RowToList r' l'
      , RowToList dr dl
      , RowToList dr' dl'
-     , Status g
-     , TypeEquals dv (Json -> g (f v))
+     , Status f
+     , TypeEquals dv (Json -> f (g v))
      )
-  => LenientDecodeJsonPer_ g (Cons s dv dl') dr (Cons s (f v) l') r
+  => LenientDecodeJsonPer_ f (Cons s dv dl') dr (Cons s (g v) l') r
   where
   lenientDecodeJsonPer_ _ _ decoderRecord object = do
     let
@@ -70,7 +70,7 @@ instance lenientDecodeJsonPer_Cons_Plus
       fieldName :: String
       fieldName = reflectSymbol sProxy
 
-      decoder :: Json -> g (f v)
+      decoder :: Json -> f (g v)
       decoder = to $ get sProxy decoderRecord
 
       -- To prevent unnecessary creation of intermediate decoder records,
@@ -94,12 +94,12 @@ instance lenientDecodeJsonPer_Cons_Plus
         report $ insert sProxy empty rest
 
 else instance lenientDecodeJsonPer_Cons_nonPlus
-  :: ( Bind g
-     , Cases g dl r
-     , Cases g dl' r'
+  :: ( Bind f
+     , Cases f dl r
+     , Cases f dl' r'
      , Cons s v r' r
      , Cons s dv dr' dr
-     , LenientDecodeJsonPer_ g dl' dr' l' r'
+     , LenientDecodeJsonPer_ f dl' dr' l' r'
      , IsSymbol s
      , Lacks s r'
      , Lacks s dr'
@@ -107,10 +107,10 @@ else instance lenientDecodeJsonPer_Cons_nonPlus
      , RowToList r' l'
      , RowToList dr dl
      , RowToList dr' dl'
-     , Status g
-     , TypeEquals dv (Json -> g v)
+     , Status f
+     , TypeEquals dv (Json -> f v)
      )
-  => LenientDecodeJsonPer_ g (Cons s dv dl') dr (Cons s v l') r
+  => LenientDecodeJsonPer_ f (Cons s dv dl') dr (Cons s v l') r
   where
   lenientDecodeJsonPer_ _ _ decoderRecord object = do
     let
@@ -120,7 +120,7 @@ else instance lenientDecodeJsonPer_Cons_nonPlus
       fieldName :: String
       fieldName = reflectSymbol sProxy
 
-      decoder :: Json -> g v
+      decoder :: Json -> f v
       decoder = to $ get sProxy decoderRecord
 
       -- To prevent unnecessary creation of intermediate decoder records,

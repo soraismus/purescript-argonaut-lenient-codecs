@@ -1,4 +1,7 @@
-module Data.Argonaut.Decode.Cases where
+module Data.Argonaut.Decode.Cases
+  ( class Cases
+  )
+  where
 
 import Type.Row (class Cons, Cons, Nil, kind RowList)
 
