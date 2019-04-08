@@ -1,23 +1,22 @@
 module Data.Argonaut.Decode.Flex where
 
-import Prelude (class Bind, bind, flip, ($))
+import Prelude (class Bind, bind, ($))
 
 import Control.Plus (class Plus, empty)
 import Data.Argonaut.Core (Json)
 import Data.Argonaut.Decode.Cases
-import Data.Argonaut.Decode.Class
-  ( class DecodeJson
-  , class GDecodeJson
-  , decodeJson
+import Data.Argonaut.Decode.Class (class GDecodeJson)
+import Data.Argonaut.Decode.Lenient
+  ( class LenientGDecodeJson
+  , lenientGDecodeJson
   )
 import Data.Argonaut.Decode.Standard
   ( class DecodeJsonWith_
   , __decodeJsonWith
   )
 import Data.Argonaut.Utils (reportJson, reportObject)
-import Data.Either (Either(Left, Right))
 import Data.Maybe (Maybe(Just, Nothing))
-import Data.Status.Class (class Status, report, reportError)
+import Data.Status.Class (class Status, report)
 import Data.Symbol (class IsSymbol, SProxy(SProxy), reflectSymbol)
 import Foreign.Object (Object, lookup)
 import Record (get, insert, merge, union)
@@ -36,52 +35,10 @@ import Type.Row
   )
 import Unsafe.Coerce (unsafeCoerce)
 
-class FlexGDecodeJson f (r :: # Type) (l :: RowList) | l -> r where
-  flexGDecodeJson :: Object Json -> RLProxy l -> f (Record r)
-
-instance flexGDecodeJsonNil
-  :: Status f
-  => FlexGDecodeJson f () Nil where
-  flexGDecodeJson _ _ = report {}
-
-instance flexGDecodeJsonCons
-  :: ( Bind g
-     , Cons s (f v) rTail r
-     , DecodeJson (f v)
-     , FlexGDecodeJson g rTail tail
-     , IsSymbol s
-     , Lacks s rTail
-     , Plus f
-     , Status g
-     )
-  => FlexGDecodeJson g r (Cons s (f v) tail) where
-  flexGDecodeJson object _ = do
-    let sProxy = SProxy :: SProxy s
-    let fieldName = reflectSymbol sProxy
-    rest <- flexGDecodeJson object (RLProxy :: RLProxy tail)
-    case lookup fieldName object of
-      Just jsonVal ->
-        case decodeJson jsonVal of
-          Left errorStr -> reportError errorStr
-          Right val     -> report $ insert sProxy val rest
-      Nothing ->
-        report $ insert sProxy empty rest
-
-class FlexDecodeJson f a where
-  flexDecodeJson' :: Json -> f a
-
-instance flexDecodeJsonRecord
-  :: ( FlexGDecodeJson f r l
-     , RowToList r l
-     , Status f
-     )
-  => FlexDecodeJson f (Record r) where
-  flexDecodeJson' = reportJson $ flip flexGDecodeJson (RLProxy :: RLProxy l)
-
 flexDecodeJson
   :: forall f l0 l1 l2 r0 r1 r2
    . Bind f
-  => FlexGDecodeJson f r0 l0
+  => LenientGDecodeJson f r0 l0
   => GDecodeJson r1 l1
   => Nub r2 r2
   => RowToList r0 l0
@@ -95,14 +52,14 @@ flexDecodeJson
 flexDecodeJson _ = reportJson go
   where
   go object = do
-    record0 <- flexGDecodeJson object (RLProxy :: RLProxy l0)
+    record0 <- lenientGDecodeJson object (RLProxy :: RLProxy l0)
     record1 <- reportObject object (RLProxy :: RLProxy l1)
     report $ merge record0 record1
 
 flexDecodeJson_
   :: forall f l0 l1 l2 r0 r1 r2
    . Bind f
-  => FlexGDecodeJson f r0 l0
+  => LenientGDecodeJson f r0 l0
   => GDecodeJson r1 l1
   => RowToList r0 l0
   => RowToList r1 l1
@@ -115,7 +72,7 @@ flexDecodeJson_
 flexDecodeJson_ _ = reportJson go
   where
   go object = do
-    record0 <- flexGDecodeJson object (RLProxy :: RLProxy l0)
+    record0 <- lenientGDecodeJson object (RLProxy :: RLProxy l0)
     record1 <- reportObject object (RLProxy :: RLProxy l1)
     report $ union record0 record1
 

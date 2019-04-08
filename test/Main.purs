@@ -6,7 +6,6 @@ import Data.Argonaut.Core (Json)
 import Data.Argonaut.Decode (decodeJson)
 import Data.Argonaut.Decode.Flex
   ( flexDecodeJson
-  , flexDecodeJson'
   , flexDecodeJsonWith
   , flexDecodeJsonWithBoth
   )
@@ -212,24 +211,23 @@ main = runTest do
               result :: Either String Type_2
               result = lenientDecodeJson (encodeJson val2)
             assert $ check' result (_ == val2) otherwise notVal2
-      suite "flexDecodeJson'" do
         suite "Type_3" do
           test "val0" do
             let
               result :: Either String Type_3
-              result = flexDecodeJson' (encodeJson val0)
+              result = lenientDecodeJson (encodeJson val0)
             assert $ check result doesntMeet
               (_ == { a2: Nothing, a3: Nothing, a4: Nothing })
           test "val1" do
             let
               result :: Either String Type_3
-              result = flexDecodeJson' (encodeJson val1)
+              result = lenientDecodeJson (encodeJson val1)
             assert $ check result doesntMeet
               (_ == { a2: val1.a2, a3: Nothing, a4: Nothing })
           test "val2" do
             let
               result :: Either String Type_3
-              result = flexDecodeJson' (encodeJson val2)
+              result = lenientDecodeJson (encodeJson val2)
             assert $ check result doesntMeet
               (_ == { a2: val2.a2, a3: val2.a3, a4: val2.a4 })
       suite "flexDecodeJson" do
@@ -494,7 +492,7 @@ main = runTest do
                   result :: Either String Type_2
                   result = decodeJsonWith {} (encodeJson val2)
                 assert $ check' result (_ == val2) otherwise doesntMeet
-      suite "flexDecodeJson'" do
+      suite "lenientDecodeJson" do
         suite "Type_1" do
           suite "val0" do
             test "#0" do
@@ -913,26 +911,26 @@ main = runTest do
               result :: Either String Type_7
               result = lenientDecodeJson (encodeJson val5)
             assert $ check' result (_ == val5) otherwise notVal5
-      suite "flexDecodeJson'" do
         suite "Type_8" do
           test "val3" do
             let
               result :: Either String Type_8
-              result = flexDecodeJson' (encodeJson val3)
+              result = lenientDecodeJson (encodeJson val3)
             assert $ check result doesntMeet
               (_ == { a2: [], a3: [], a4: [] })
           test "val4" do
             let
               result :: Either String Type_8
-              result = flexDecodeJson' (encodeJson val4)
+              result = lenientDecodeJson (encodeJson val4)
             assert $ check result doesntMeet
               (_ == { a2: val4.a2, a3: [], a4: [] })
           test "val5" do
             let
               result :: Either String Type_8
-              result = flexDecodeJson' (encodeJson val5)
+              result = lenientDecodeJson (encodeJson val5)
             assert $ check result doesntMeet
               (_ == { a2: val5.a2, a3: val5.a3, a4: val5.a4 })
+
       suite "flexDecodeJsonWithBoth" do
         suite "Type_7" do
           suite "val3" do
