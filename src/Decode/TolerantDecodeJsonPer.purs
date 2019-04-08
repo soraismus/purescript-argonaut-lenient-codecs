@@ -1,4 +1,4 @@
-module Data.Argonaut.Decode.Lenient.Per where
+module Data.Argonaut.Decode.Tolerant.Per where
 
 import Prelude (class Bind, bind, ($))
 
@@ -23,32 +23,32 @@ import Type.Row
   )
 import Unsafe.Coerce (unsafeCoerce)
 
-class LenientDecodeJsonPer_
+class TolerantDecodeJsonPer_
   (f :: Type -> Type)
   (l1 :: RowList)
   (r1 :: # Type)
   (l0 :: RowList)
   (r0 :: # Type)
   | l1 -> r1 l0 r0 where
-  lenientDecodeJsonPer_
+  tolerantDecodeJsonPer_
     :: RLProxy l0
     -> RLProxy l1
     -> Record r1
     -> Object Json
     -> f (Record r0)
 
-instance lenientDecodeJsonPer_Nil
+instance tolerantDecodeJsonPer_Nil
   :: Status f
-  => LenientDecodeJsonPer_ f Nil () Nil () where
-  lenientDecodeJsonPer_ _ _ _ _ = report {}
+  => TolerantDecodeJsonPer_ f Nil () Nil () where
+  tolerantDecodeJsonPer_ _ _ _ _ = report {}
 
-instance lenientDecodeJsonPer_Cons_Plus
+instance tolerantDecodeJsonPer_Cons_Plus
   :: ( Bind f
      , Cases dl r
      , Cases dl' r'
      , Cons s (g v) r' r
      , Cons s dv dr' dr
-     , LenientDecodeJsonPer_ f dl' dr' l' r'
+     , TolerantDecodeJsonPer_ f dl' dr' l' r'
      , IsSymbol s
      , Lacks s r'
      , Lacks s dr'
@@ -60,9 +60,9 @@ instance lenientDecodeJsonPer_Cons_Plus
      , Status f
      , TypeEquals dv (Json -> f (g v))
      )
-  => LenientDecodeJsonPer_ f (Cons s dv dl') dr (Cons s (g v) l') r
+  => TolerantDecodeJsonPer_ f (Cons s dv dl') dr (Cons s (g v) l') r
   where
-  lenientDecodeJsonPer_ _ _ decoderRecord object = do
+  tolerantDecodeJsonPer_ _ _ decoderRecord object = do
     let
       sProxy :: SProxy s
       sProxy = SProxy
@@ -80,7 +80,7 @@ instance lenientDecodeJsonPer_Cons_Plus
       decoderRecord' = unsafeCoerce decoderRecord
 
     rest <-
-      lenientDecodeJsonPer_
+      tolerantDecodeJsonPer_
         (RLProxy :: RLProxy l')
         (RLProxy :: RLProxy dl')
         decoderRecord'
@@ -93,13 +93,13 @@ instance lenientDecodeJsonPer_Cons_Plus
       Nothing ->
         report $ insert sProxy empty rest
 
-else instance lenientDecodeJsonPer_Cons_nonPlus
+else instance tolerantDecodeJsonPer_Cons_nonPlus
   :: ( Bind f
      , Cases dl r
      , Cases dl' r'
      , Cons s v r' r
      , Cons s dv dr' dr
-     , LenientDecodeJsonPer_ f dl' dr' l' r'
+     , TolerantDecodeJsonPer_ f dl' dr' l' r'
      , IsSymbol s
      , Lacks s r'
      , Lacks s dr'
@@ -110,9 +110,9 @@ else instance lenientDecodeJsonPer_Cons_nonPlus
      , Status f
      , TypeEquals dv (Json -> f v)
      )
-  => LenientDecodeJsonPer_ f (Cons s dv dl') dr (Cons s v l') r
+  => TolerantDecodeJsonPer_ f (Cons s dv dl') dr (Cons s v l') r
   where
-  lenientDecodeJsonPer_ _ _ decoderRecord object = do
+  tolerantDecodeJsonPer_ _ _ decoderRecord object = do
     let
       sProxy :: SProxy s
       sProxy = SProxy
@@ -130,7 +130,7 @@ else instance lenientDecodeJsonPer_Cons_nonPlus
       decoderRecord' = unsafeCoerce decoderRecord
 
     rest <-
-      lenientDecodeJsonPer_
+      tolerantDecodeJsonPer_
         (RLProxy :: RLProxy l')
         (RLProxy :: RLProxy dl')
         decoderRecord'
@@ -147,26 +147,26 @@ class
   ( Cases l1 r0
   , RowToList r1 l1
   ) <=
-  LenientDecodeJsonPer
+  TolerantDecodeJsonPer
     (f :: Type -> Type)
     (l1 :: RowList)
     (r1 :: # Type)
     (r0 :: # Type)
     | r0 -> r1 l1 where
-    lenientDecodeJsonPer :: Record r1 -> Json -> f (Record r0)
+    tolerantDecodeJsonPer :: Record r1 -> Json -> f (Record r0)
 
-instance lenientDecodeJsonPerLenientDecodeJsonPer_
+instance tolerantDecodeJsonPerTolerantDecodeJsonPer_
   :: ( Cases l1 r0
-     , LenientDecodeJsonPer_ f l1 r1 l0 r0
+     , TolerantDecodeJsonPer_ f l1 r1 l0 r0
      , RowToList r0 l0
      , RowToList r1 l1
      , Status f
      )
-  => LenientDecodeJsonPer f l1 r1 r0
+  => TolerantDecodeJsonPer f l1 r1 r0
   where
-  lenientDecodeJsonPer decoderRecord =
+  tolerantDecodeJsonPer decoderRecord =
     reportJson $
-      lenientDecodeJsonPer_
+      tolerantDecodeJsonPer_
         (RLProxy :: RLProxy l0)
         (RLProxy :: RLProxy l1)
         decoderRecord

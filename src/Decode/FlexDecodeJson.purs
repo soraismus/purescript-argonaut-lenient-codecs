@@ -6,9 +6,9 @@ import Control.Plus (class Plus, empty)
 import Data.Argonaut.Core (Json)
 import Data.Argonaut.Decode.Cases
 import Data.Argonaut.Decode.Class (class GDecodeJson)
-import Data.Argonaut.Decode.Lenient
-  ( class LenientGDecodeJson
-  , lenientGDecodeJson
+import Data.Argonaut.Decode.Tolerant
+  ( class TolerantGDecodeJson
+  , tolerantGDecodeJson
   )
 import Data.Argonaut.Decode.Standard
   ( class DecodeJsonWith_
@@ -38,7 +38,7 @@ import Unsafe.Coerce (unsafeCoerce)
 flexDecodeJson
   :: forall f l0 l1 l2 r0 r1 r2
    . Bind f
-  => LenientGDecodeJson f r0 l0
+  => TolerantGDecodeJson f r0 l0
   => GDecodeJson r1 l1
   => Nub r2 r2
   => RowToList r0 l0
@@ -52,14 +52,14 @@ flexDecodeJson
 flexDecodeJson _ = reportJson go
   where
   go object = do
-    record0 <- lenientGDecodeJson object (RLProxy :: RLProxy l0)
+    record0 <- tolerantGDecodeJson object (RLProxy :: RLProxy l0)
     record1 <- reportObject object (RLProxy :: RLProxy l1)
     report $ merge record0 record1
 
 flexDecodeJson_
   :: forall f l0 l1 l2 r0 r1 r2
    . Bind f
-  => LenientGDecodeJson f r0 l0
+  => TolerantGDecodeJson f r0 l0
   => GDecodeJson r1 l1
   => RowToList r0 l0
   => RowToList r1 l1
@@ -72,7 +72,7 @@ flexDecodeJson_
 flexDecodeJson_ _ = reportJson go
   where
   go object = do
-    record0 <- lenientGDecodeJson object (RLProxy :: RLProxy l0)
+    record0 <- tolerantGDecodeJson object (RLProxy :: RLProxy l0)
     record1 <- reportObject object (RLProxy :: RLProxy l1)
     report $ union record0 record1
 

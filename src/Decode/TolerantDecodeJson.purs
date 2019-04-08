@@ -1,8 +1,8 @@
-module Data.Argonaut.Decode.Lenient
-  ( class LenientDecodeJson
-  , class LenientGDecodeJson
-  , lenientDecodeJson
-  , lenientGDecodeJson
+module Data.Argonaut.Decode.Tolerant
+  ( class TolerantDecodeJson
+  , class TolerantGDecodeJson
+  , tolerantDecodeJson
+  , tolerantGDecodeJson
   ) where
 
 import Prelude (class Bind, bind, flip, ($), (<>))
@@ -27,29 +27,29 @@ import Type.Row
   , kind RowList
   )
 
-class LenientGDecodeJson f (r :: # Type) (l :: RowList) | l -> r where
-  lenientGDecodeJson :: Object Json -> RLProxy l -> f (Record r)
+class TolerantGDecodeJson f (r :: # Type) (l :: RowList) | l -> r where
+  tolerantGDecodeJson :: Object Json -> RLProxy l -> f (Record r)
 
-instance lenientGDecodeJsonNil
+instance tolerantGDecodeJsonNil
   :: Status f
-  => LenientGDecodeJson f () Nil where
-  lenientGDecodeJson _ _ = report {}
+  => TolerantGDecodeJson f () Nil where
+  tolerantGDecodeJson _ _ = report {}
 
-instance lenientGDecodeJsonCons_Plus
+instance tolerantGDecodeJsonCons_Plus
   :: ( Bind g
      , Cons s (f v) rTail r
      , DecodeJson (f v)
-     , LenientGDecodeJson g rTail tail
+     , TolerantGDecodeJson g rTail tail
      , IsSymbol s
      , Lacks s rTail
      , Plus f
      , Status g
      )
-  => LenientGDecodeJson g r (Cons s (f v) tail) where
-  lenientGDecodeJson object _ = do
+  => TolerantGDecodeJson g r (Cons s (f v) tail) where
+  tolerantGDecodeJson object _ = do
     let sProxy = SProxy :: SProxy s
     let fieldName = reflectSymbol sProxy
-    rest <- lenientGDecodeJson object (RLProxy :: RLProxy tail)
+    rest <- tolerantGDecodeJson object (RLProxy :: RLProxy tail)
     case lookup fieldName object of
       Just jsonVal ->
         case decodeJson jsonVal of
@@ -58,20 +58,20 @@ instance lenientGDecodeJsonCons_Plus
       Nothing ->
         report $ insert sProxy empty rest
 
-else instance lenientGDecodeJsonCons_nonPlus
+else instance tolerantGDecodeJsonCons_nonPlus
   :: ( Bind g
      , Cons s v rTail r
      , DecodeJson v
-     , LenientGDecodeJson g rTail tail
+     , TolerantGDecodeJson g rTail tail
      , IsSymbol s
      , Lacks s rTail
      , Status g
      )
-  => LenientGDecodeJson g r (Cons s v tail) where
-  lenientGDecodeJson object _ = do
+  => TolerantGDecodeJson g r (Cons s v tail) where
+  tolerantGDecodeJson object _ = do
     let sProxy = SProxy :: SProxy s
     let fieldName = reflectSymbol sProxy
-    rest <- lenientGDecodeJson object (RLProxy :: RLProxy tail)
+    rest <- tolerantGDecodeJson object (RLProxy :: RLProxy tail)
     case lookup fieldName object of
       Just jsonVal ->
         case decodeJson jsonVal of
@@ -80,13 +80,13 @@ else instance lenientGDecodeJsonCons_nonPlus
       Nothing ->
         reportError $ "JSON was missing expected field: " <> fieldName
 
-class LenientDecodeJson f a where
-  lenientDecodeJson :: Json -> f a
+class TolerantDecodeJson f a where
+  tolerantDecodeJson :: Json -> f a
 
-instance lenientDecodeJsonRecord
-  :: ( LenientGDecodeJson f r l
+instance tolerantDecodeJsonRecord
+  :: ( TolerantGDecodeJson f r l
      , RowToList r l
      , Status f
      )
-  => LenientDecodeJson f (Record r) where
-  lenientDecodeJson = reportJson $ flip lenientGDecodeJson (RLProxy :: RLProxy l)
+  => TolerantDecodeJson f (Record r) where
+  tolerantDecodeJson = reportJson $ flip tolerantGDecodeJson (RLProxy :: RLProxy l)
