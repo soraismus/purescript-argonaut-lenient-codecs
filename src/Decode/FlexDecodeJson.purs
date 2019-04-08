@@ -1,6 +1,6 @@
 module Data.Argonaut.Decode.Flex where
 
-import Prelude (class Bind, bind, flip, pure, ($))
+import Prelude (class Bind, bind, flip, ($))
 
 import Control.Alternative (class Alternative, empty)
 import Data.Argonaut.Core (Json)
@@ -48,7 +48,7 @@ instance flexGDecodeJsonCons
   :: ( Alternative f
      , Bind g
      , Cons s (f v) rTail r
-     , DecodeJson v
+     , DecodeJson (f v)
      , FlexGDecodeJson g rTail tail
      , IsSymbol s
      , Lacks s rTail
@@ -63,7 +63,7 @@ instance flexGDecodeJsonCons
       Just jsonVal ->
         case decodeJson jsonVal of
           Left errorStr -> reportError errorStr
-          Right val     -> report $ insert sProxy (pure val) rest
+          Right val     -> report $ insert sProxy val rest
       Nothing ->
         report $ insert sProxy empty rest
 

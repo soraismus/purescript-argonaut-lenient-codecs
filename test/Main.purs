@@ -10,6 +10,7 @@ import Data.Argonaut.Decode.Flex
   , flexDecodeJsonWith
   , flexDecodeJsonWithBoth
   )
+import Data.Argonaut.Decode.Mh (mhDecodeJson)
 import Data.Argonaut.Decode.Standard (decodeJsonWith, decodeJsonWith')
 import Data.Argonaut.Decode.X (xDecodeJsonWith)
 import Data.Argonaut.Decode.XFlex (xFlexDecodeJsonWithBoth)
@@ -45,7 +46,12 @@ type Type_1 = { | TypeRep_3 Maybe () }
 type Type_2 = { | TypeRep_5 Maybe () }
 type Type_3 = { | TypeRep_4 Maybe () }
 type Type_4 = { | TypeRep_1 Maybe () }
-type Type_5 = { | TypeRep_5 Array () }
+
+type Type_5 = { | TypeRep_0 Array () }
+type Type_6 = { | TypeRep_3 Array () }
+type Type_7 = { | TypeRep_5 Array () }
+type Type_8 = { | TypeRep_4 Array () }
+type Type_9 = { | TypeRep_1 Array () }
 
 val0 :: Type_0
 val0 = { a0: 0, a1: 1 }
@@ -55,6 +61,15 @@ val1 = { a0: 0, a1: 1, a2: Just 2 }
 
 val2 :: Type_2
 val2 = { a0: 0, a1: 1, a2: Just 2, a3: Just "hello", a4: Just true }
+
+val3 :: Type_5
+val3 = { a0: 0, a1: 1 }
+
+val4 :: Type_6
+val4 = { a0: 0, a1: 1, a2: [2] }
+
+val5 :: Type_7
+val5 = { a0: 0, a1: 1, a2: [2], a3: ["hello"], a4: [true] }
 
 check
   :: forall f a
@@ -81,15 +96,7 @@ check'
   -> Boolean
   -> String
   -> Tuple String Boolean
-check' result predicate _ msg =
-  summarize
-    (Tuple failsUnexpectedly false)
-    (\val ->
-      let
-        state = predicate val
-        msg' = if state then successful else msg
-      in Tuple msg' state)
-    result
+check' result predicate _ msg = check result msg predicate
 
 fails :: forall f a . Status f => f a -> Tuple String Boolean
 fails result =
@@ -105,6 +112,15 @@ notVal1 = "isn't equal to val1"
 
 notVal2 :: String
 notVal2 = "isn't equal to val2"
+
+notVal3 :: String
+notVal3 = "isn't equal to val3"
+
+notVal4 :: String
+notVal4 = "isn't equal to val4"
+
+notVal5 :: String
+notVal5 = "isn't equal to val5"
 
 doesntMeet :: String
 doesntMeet = "doesn't meet expectations"
@@ -131,6 +147,71 @@ main :: Effect Unit
 main = runTest do
   suite "Either String" do
     suite "Maybe" do
+      suite "mhDecodeJson" do
+        suite "Type_0" do
+          test "val0" do
+            let
+              result :: Either String Type_0
+              result = mhDecodeJson (encodeJson val0)
+            assert $ check' result (_ == val0) otherwise notVal0
+          test "val1" do
+            let
+              result :: Either String Type_0
+              result = mhDecodeJson (encodeJson val1)
+            assert $ check result doesntMeet
+              (_ == { a0: val1.a0, a1: val1.a1 })
+          test "val2" do
+            let
+              result :: Either String Type_0
+              result = mhDecodeJson (encodeJson val2)
+            assert $ check result doesntMeet
+              (_ == { a0: val2.a0, a1: val2.a1 })
+        suite "Type_1" do
+          test "val0" do
+            let
+              result :: Either String Type_1
+              result = mhDecodeJson (encodeJson val0)
+            assert $ check result doesntMeet
+              (_ == { a0: val0.a0, a1: val0.a1, a2: Nothing })
+          test "val1" do
+            let
+              result :: Either String Type_1
+              result = mhDecodeJson (encodeJson val1)
+            assert $ check' result (_ == val1) otherwise notVal1
+          test "val2" do
+            let
+              result :: Either String Type_1
+              result = mhDecodeJson (encodeJson val2)
+            assert $ check result doesntMeet
+              (_ == { a0: val2.a0, a1: val2.a1, a2: val2.a2 })
+        suite "Type_2" do
+          test "val0" do
+            let
+              result :: Either String Type_2
+              result = mhDecodeJson (encodeJson val0)
+            assert $ check result doesntMeet
+              (_ == { a0: val0.a0
+                    , a1: val0.a1
+                    , a2: Nothing
+                    , a3: Nothing
+                    , a4: Nothing
+                    })
+          test "val1" do
+            let
+              result :: Either String Type_2
+              result = mhDecodeJson (encodeJson val1)
+            assert $ check result doesntMeet
+              (_ == { a0: val1.a0
+                    , a1: val1.a1
+                    , a2: val1.a2
+                    , a3: Nothing
+                    , a4: Nothing
+                    })
+          test "val2" do
+            let
+              result :: Either String Type_2
+              result = mhDecodeJson (encodeJson val2)
+            assert $ check' result (_ == val2) otherwise notVal2
       suite "flexDecodeJson'" do
         suite "Type_3" do
           test "val0" do
@@ -144,7 +225,7 @@ main = runTest do
               result :: Either String Type_3
               result = flexDecodeJson' (encodeJson val1)
             assert $ check result doesntMeet
-              (_ == { a2: val2.a2, a3: Nothing, a4: Nothing })
+              (_ == { a2: val1.a2, a3: Nothing, a4: Nothing })
           test "val2" do
             let
               result :: Either String Type_3
@@ -776,13 +857,88 @@ main = runTest do
                       , a3: Just "bye"
                       , a4: Just false
                       })
-    suite "List" do
-      suite "flexDecodeJsonWithBoth" do
+    suite "Array" do
+      suite "mhDecodeJson" do
         suite "Type_5" do
-          suite "val0" do
+          test "val3" do
+            let
+              result :: Either String Type_5
+              result = mhDecodeJson (encodeJson val3)
+            assert $ check' result (_ == val3) otherwise notVal3
+          test "val4" do
+            let
+              result :: Either String Type_5
+              result = mhDecodeJson (encodeJson val4)
+            assert $ check result doesntMeet
+              (_ == { a0: val4.a0, a1: val4.a1 })
+          test "val5" do
+            let
+              result :: Either String Type_5
+              result = mhDecodeJson (encodeJson val5)
+            assert $ check result doesntMeet
+              (_ == { a0: val5.a0, a1: val5.a1 })
+        suite "Type_6" do
+          test "val3" do
+            let
+              result :: Either String Type_6
+              result = mhDecodeJson (encodeJson val3)
+            assert $ check result doesntMeet
+              (_ == { a0: val3.a0, a1: val3.a1, a2: [] })
+          test "val4" do
+            let
+              result :: Either String Type_6
+              result = mhDecodeJson (encodeJson val4)
+            assert $ check' result (_ == val4) otherwise notVal4
+          test "val5" do
+            let
+              result :: Either String Type_6
+              result = mhDecodeJson (encodeJson val5)
+            assert $ check result doesntMeet
+              (_ == { a0: val5.a0, a1: val5.a1, a2: val5.a2 })
+        suite "Type_7" do
+          test "val3" do
+            let
+              result :: Either String Type_7
+              result = mhDecodeJson (encodeJson val3)
+            assert $ check result doesntMeet
+              (_ == { a0: val3.a0, a1: val3.a1, a2: [], a3: [], a4: [] })
+          test "val4" do
+            let
+              result :: Either String Type_7
+              result = mhDecodeJson (encodeJson val4)
+            assert $ check result doesntMeet
+              (_ == { a0: val4.a0, a1: val4.a1, a2: val4.a2, a3: [], a4: [] })
+          test "val5" do
+            let
+              result :: Either String Type_7
+              result = mhDecodeJson (encodeJson val5)
+            assert $ check' result (_ == val5) otherwise notVal5
+      suite "flexDecodeJson'" do
+        suite "Type_8" do
+          test "val3" do
+            let
+              result :: Either String Type_8
+              result = flexDecodeJson' (encodeJson val3)
+            assert $ check result doesntMeet
+              (_ == { a2: [], a3: [], a4: [] })
+          test "val4" do
+            let
+              result :: Either String Type_8
+              result = flexDecodeJson' (encodeJson val4)
+            assert $ check result doesntMeet
+              (_ == { a2: val4.a2, a3: [], a4: [] })
+          test "val5" do
+            let
+              result :: Either String Type_8
+              result = flexDecodeJson' (encodeJson val5)
+            assert $ check result doesntMeet
+              (_ == { a2: val5.a2, a3: val5.a3, a4: val5.a4 })
+      suite "flexDecodeJsonWithBoth" do
+        suite "Type_7" do
+          suite "val3" do
             test "#0" do
               let
-                result :: Either String Type_5
+                result :: Either String Type_7
                 result =
                   flexDecodeJsonWithBoth
                     { a0: \json -> Right 100
@@ -792,11 +948,11 @@ main = runTest do
                     { a2: \json -> Right $ [102]
                     , a4: \json -> Right $ [false]
                     }
-                    (encodeJson val0)
+                    (encodeJson val3)
               assert $ fails result
             test "#1" do
               let
-                result :: Either String Type_5
+                result :: Either String Type_7
                 result =
                   flexDecodeJsonWithBoth
                     { a0: \json -> Right 100
@@ -806,7 +962,7 @@ main = runTest do
                     , a3: \json -> Right $ ["bye"]
                     , a4: \json -> Right $ [false]
                     }
-                    (encodeJson val0)
+                    (encodeJson val3)
               assert $ check result doesntMeet
                 (_ == { a0: 100
                       , a1: 101
@@ -814,10 +970,10 @@ main = runTest do
                       , a3: []
                       , a4: []
                       })
-          suite "val1" do
+          suite "val4" do
             test "#0" do
               let
-                result :: Either String Type_5
+                result :: Either String Type_7
                 result =
                   flexDecodeJsonWithBoth
                     { a0: \json -> Right 100
@@ -827,11 +983,11 @@ main = runTest do
                     { a2: \json -> Right $ [102]
                     , a4: \json -> Right $ [false]
                     }
-                    (encodeJson val1)
+                    (encodeJson val4)
               assert $ fails result
             test "#1" do
               let
-                result :: Either String Type_5
+                result :: Either String Type_7
                 result =
                   flexDecodeJsonWithBoth
                     { a0: \json -> Right 100
@@ -841,7 +997,7 @@ main = runTest do
                     , a3: \json -> Right $ ["bye"]
                     , a4: \json -> Right $ [false]
                     }
-                    (encodeJson val1)
+                    (encodeJson val4)
               assert $ check result doesntMeet
                 (_ == { a0: 100
                      , a1: 101
@@ -849,10 +1005,10 @@ main = runTest do
                      , a3: []
                      , a4: []
                      })
-          suite "val2" do
+          suite "val5" do
             test "#0" do
               let
-                result :: Either String Type_5
+                result :: Either String Type_7
                 result =
                   flexDecodeJsonWithBoth
                     { a0: \json -> Right 100
@@ -862,7 +1018,7 @@ main = runTest do
                     { a2: \json -> Right $ [102]
                     , a4: \json -> Right $ [false]
                     }
-                    (encodeJson val2)
+                    (encodeJson val5)
               assert $ check result doesntMeet
                 (_ == { a0: 100
                      , a1: 101
@@ -872,7 +1028,7 @@ main = runTest do
                      })
             test "#1" do
               let
-                result :: Either String Type_5
+                result :: Either String Type_7
                 result =
                   flexDecodeJsonWithBoth
                     { a0: \json -> Right 100
@@ -882,7 +1038,7 @@ main = runTest do
                     , a3: \json -> Right $ ["bye"]
                     , a4: \json -> Right $ [false]
                     }
-                    (encodeJson val2)
+                    (encodeJson val5)
               assert $ check result doesntMeet
                 (_ == { a0: 100
                      , a1: 101
@@ -891,13 +1047,13 @@ main = runTest do
                      , a4: [false]
                      })
   suite "Maybe" do
-    suite "List" do
+    suite "Array" do
       suite "flexDecodeJsonWithBoth" do
-        suite "Type_5" do
-          suite "val1" do
+        suite "Type_7" do
+          suite "val4" do
             test "#0" do
               let
-                result :: Either String Type_5
+                result :: Either String Type_7
                 result =
                   flexDecodeJsonWithBoth
                     { a0: \json -> report 100
@@ -907,11 +1063,11 @@ main = runTest do
                     { a2: \json -> report $ [102]
                     , a4: \json -> report $ [false]
                     }
-                    (encodeJson val1)
+                    (encodeJson val4)
               assert $ fails result
             test "#1" do
               let
-                result :: Either String Type_5
+                result :: Either String Type_7
                 result =
                   flexDecodeJsonWithBoth
                     { a0: \json -> report 100
@@ -921,7 +1077,7 @@ main = runTest do
                     , a3: \json -> report $ ["bye"]
                     , a4: \json -> report $ [false]
                     }
-                    (encodeJson val1)
+                    (encodeJson val4)
               assert $ check result doesntMeet
                 (_ == { a0: 100
                       , a1: 101
@@ -929,10 +1085,10 @@ main = runTest do
                       , a3: []
                       , a4: []
                       })
-          suite "val2" do
+          suite "val5" do
             test "#0" do
               let
-                result :: Either String Type_5
+                result :: Either String Type_7
                 result =
                   flexDecodeJsonWithBoth
                     { a0: \json -> report 100
@@ -942,7 +1098,7 @@ main = runTest do
                     , a3: \json -> report $ ["bye"]
                     , a4: \json -> report $ [false]
                     }
-                    (encodeJson val2)
+                    (encodeJson val5)
               assert $ check result doesntMeet
                 (_ == { a0: 100
                       , a1: 101

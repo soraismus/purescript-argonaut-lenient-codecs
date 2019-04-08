@@ -14,6 +14,7 @@ You can edit this file as you like.
     , "generics-rep"
     , "maybe"
     , "proxy"
+    , "psci-support"
     , "record"
     , "test-unit"
     , "type-equality"
