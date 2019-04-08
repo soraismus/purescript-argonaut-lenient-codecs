@@ -2,7 +2,7 @@ module Test.Main
   ( main
   ) where
 
-import Prelude
+import Prelude (Unit, discard)
 
 import Effect (Effect)
 import Test.Suites.DecodeJsonPer (_suite) as DecodeJsonPer
