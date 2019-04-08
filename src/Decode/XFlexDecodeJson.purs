@@ -6,9 +6,12 @@ import Control.Alternative (class Alternative)
 import Data.Argonaut.Core (Json)
 import Data.Argonaut.Decode.Cases1 (class Cases1)
 import Data.Argonaut.Decode.Class (class GDecodeJson)
-import Data.Argonaut.Decode.X
+import Data.Argonaut.Decode.X (class XDecodeJsonWith_, __xDecodeJsonWith)
 import Data.Argonaut.Utils
-import Data.Either (Either(Left, Right))
+  ( getMissingFieldErrorMessage
+  , reportJson
+  , reportObject
+  )
 import Data.Maybe (Maybe(Just, Nothing))
 import Data.Status.Class (class Status, report, reportError)
 import Data.Symbol (class IsSymbol, SProxy(SProxy), reflectSymbol)

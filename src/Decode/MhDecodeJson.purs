@@ -1,40 +1,18 @@
 module Data.Argonaut.Decode.Mh where
 
-import Prelude (class Bind, bind, flip, pure, ($), (<>))
+import Prelude (class Bind, bind, pure, ($), (<>))
 
 import Control.Alternative (class Alternative, empty)
 import Data.Argonaut.Core (Json)
-import Data.Argonaut.Decode.Cases
-import Data.Argonaut.Decode.Class
-  ( class DecodeJson
-  , class GDecodeJson
-  , decodeJson
-  )
-import Data.Argonaut.Decode.Standard
-  ( class DecodeJsonWith_
-  , __decodeJsonWith
-  )
-import Data.Argonaut.Utils (reportJson, reportObject)
+import Data.Argonaut.Decode.Class (class DecodeJson, decodeJson)
 import Data.Either (Either(Left, Right))
 import Data.Maybe (Maybe(Just, Nothing))
 import Data.Status.Class (class Status, report, reportError)
 import Data.Symbol (class IsSymbol, SProxy(SProxy), reflectSymbol)
 import Foreign.Object (Object, lookup)
-import Record (get, insert, merge, union)
+import Record (insert)
 import Type.Data.RowList (RLProxy(RLProxy)) -- Argonaut dependency
-import Type.Equality (class TypeEquals, to)
-import Type.Row
-  ( class Cons
-  , class Lacks
-  , class Nub
-  , class RowToList
-  , class Union
-  , Cons
-  , Nil
-  , RProxy
-  , kind RowList
-  )
-import Unsafe.Coerce (unsafeCoerce)
+import Type.Row (class Cons, class Lacks, Cons, Nil, kind RowList)
 
 class MhGDecodeJson f (r :: # Type) (l :: RowList) | l -> r where
   mhGDecodeJson :: Object Json -> RLProxy l -> f (Record r)
