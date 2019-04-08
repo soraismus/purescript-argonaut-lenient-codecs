@@ -2,7 +2,7 @@ module Data.Argonaut.Decode.XFlex where
 
 import Prelude (class Bind, bind, ($))
 
-import Control.Alternative (class Alternative)
+import Control.Plus (class Plus)
 import Data.Argonaut.Core (Json)
 import Data.Argonaut.Decode.Cases1 (class Cases1)
 import Data.Argonaut.Decode.Class (class GDecodeJson)
@@ -54,8 +54,7 @@ instance __xFlexDecodeJsonWithNil
   __xFlexDecodeJsonWith _ _ _ _ _ = report {}
 
 instance __xFlexDecodeJsonWithCons
-  :: ( Alternative f
-     , Bind g
+  :: ( Bind g
      , Cases1 g dl r a
      , Cases1 g dl' r' a
      , Cons s (f v) r' r
@@ -63,6 +62,7 @@ instance __xFlexDecodeJsonWithCons
      , IsSymbol s
      , Lacks s r'
      , Lacks s dr'
+     , Plus f
      , RowToList r l
      , RowToList r' l'
      , RowToList dr dl

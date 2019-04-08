@@ -10,7 +10,7 @@ import Data.Argonaut.Decode.Flex
   , flexDecodeJsonWith
   , flexDecodeJsonWithBoth
   )
-import Data.Argonaut.Decode.Mh (mhDecodeJson)
+import Data.Argonaut.Decode.Lenient (lenientDecodeJson)
 import Data.Argonaut.Decode.Standard (decodeJsonWith, decodeJsonWith')
 import Data.Argonaut.Decode.X (xDecodeJsonWith)
 import Data.Argonaut.Decode.XFlex (xFlexDecodeJsonWithBoth)
@@ -147,48 +147,48 @@ main :: Effect Unit
 main = runTest do
   suite "Either String" do
     suite "Maybe" do
-      suite "mhDecodeJson" do
+      suite "lenientDecodeJson" do
         suite "Type_0" do
           test "val0" do
             let
               result :: Either String Type_0
-              result = mhDecodeJson (encodeJson val0)
+              result = lenientDecodeJson (encodeJson val0)
             assert $ check' result (_ == val0) otherwise notVal0
           test "val1" do
             let
               result :: Either String Type_0
-              result = mhDecodeJson (encodeJson val1)
+              result = lenientDecodeJson (encodeJson val1)
             assert $ check result doesntMeet
               (_ == { a0: val1.a0, a1: val1.a1 })
           test "val2" do
             let
               result :: Either String Type_0
-              result = mhDecodeJson (encodeJson val2)
+              result = lenientDecodeJson (encodeJson val2)
             assert $ check result doesntMeet
               (_ == { a0: val2.a0, a1: val2.a1 })
         suite "Type_1" do
           test "val0" do
             let
               result :: Either String Type_1
-              result = mhDecodeJson (encodeJson val0)
+              result = lenientDecodeJson (encodeJson val0)
             assert $ check result doesntMeet
               (_ == { a0: val0.a0, a1: val0.a1, a2: Nothing })
           test "val1" do
             let
               result :: Either String Type_1
-              result = mhDecodeJson (encodeJson val1)
+              result = lenientDecodeJson (encodeJson val1)
             assert $ check' result (_ == val1) otherwise notVal1
           test "val2" do
             let
               result :: Either String Type_1
-              result = mhDecodeJson (encodeJson val2)
+              result = lenientDecodeJson (encodeJson val2)
             assert $ check result doesntMeet
               (_ == { a0: val2.a0, a1: val2.a1, a2: val2.a2 })
         suite "Type_2" do
           test "val0" do
             let
               result :: Either String Type_2
-              result = mhDecodeJson (encodeJson val0)
+              result = lenientDecodeJson (encodeJson val0)
             assert $ check result doesntMeet
               (_ == { a0: val0.a0
                     , a1: val0.a1
@@ -199,7 +199,7 @@ main = runTest do
           test "val1" do
             let
               result :: Either String Type_2
-              result = mhDecodeJson (encodeJson val1)
+              result = lenientDecodeJson (encodeJson val1)
             assert $ check result doesntMeet
               (_ == { a0: val1.a0
                     , a1: val1.a1
@@ -210,7 +210,7 @@ main = runTest do
           test "val2" do
             let
               result :: Either String Type_2
-              result = mhDecodeJson (encodeJson val2)
+              result = lenientDecodeJson (encodeJson val2)
             assert $ check' result (_ == val2) otherwise notVal2
       suite "flexDecodeJson'" do
         suite "Type_3" do
@@ -858,60 +858,60 @@ main = runTest do
                       , a4: Just false
                       })
     suite "Array" do
-      suite "mhDecodeJson" do
+      suite "lenientDecodeJson" do
         suite "Type_5" do
           test "val3" do
             let
               result :: Either String Type_5
-              result = mhDecodeJson (encodeJson val3)
+              result = lenientDecodeJson (encodeJson val3)
             assert $ check' result (_ == val3) otherwise notVal3
           test "val4" do
             let
               result :: Either String Type_5
-              result = mhDecodeJson (encodeJson val4)
+              result = lenientDecodeJson (encodeJson val4)
             assert $ check result doesntMeet
               (_ == { a0: val4.a0, a1: val4.a1 })
           test "val5" do
             let
               result :: Either String Type_5
-              result = mhDecodeJson (encodeJson val5)
+              result = lenientDecodeJson (encodeJson val5)
             assert $ check result doesntMeet
               (_ == { a0: val5.a0, a1: val5.a1 })
         suite "Type_6" do
           test "val3" do
             let
               result :: Either String Type_6
-              result = mhDecodeJson (encodeJson val3)
+              result = lenientDecodeJson (encodeJson val3)
             assert $ check result doesntMeet
               (_ == { a0: val3.a0, a1: val3.a1, a2: [] })
           test "val4" do
             let
               result :: Either String Type_6
-              result = mhDecodeJson (encodeJson val4)
+              result = lenientDecodeJson (encodeJson val4)
             assert $ check' result (_ == val4) otherwise notVal4
           test "val5" do
             let
               result :: Either String Type_6
-              result = mhDecodeJson (encodeJson val5)
+              result = lenientDecodeJson (encodeJson val5)
             assert $ check result doesntMeet
               (_ == { a0: val5.a0, a1: val5.a1, a2: val5.a2 })
         suite "Type_7" do
           test "val3" do
             let
               result :: Either String Type_7
-              result = mhDecodeJson (encodeJson val3)
+              result = lenientDecodeJson (encodeJson val3)
             assert $ check result doesntMeet
               (_ == { a0: val3.a0, a1: val3.a1, a2: [], a3: [], a4: [] })
           test "val4" do
             let
               result :: Either String Type_7
-              result = mhDecodeJson (encodeJson val4)
+              result = lenientDecodeJson (encodeJson val4)
             assert $ check result doesntMeet
               (_ == { a0: val4.a0, a1: val4.a1, a2: val4.a2, a3: [], a4: [] })
           test "val5" do
             let
               result :: Either String Type_7
-              result = mhDecodeJson (encodeJson val5)
+              result = lenientDecodeJson (encodeJson val5)
             assert $ check' result (_ == val5) otherwise notVal5
       suite "flexDecodeJson'" do
         suite "Type_8" do

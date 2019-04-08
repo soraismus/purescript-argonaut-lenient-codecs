@@ -1,13 +1,13 @@
-module Data.Argonaut.Decode.Mh
-  ( class MhDecodeJson
-  , class MhGDecodeJson
-  , mhDecodeJson
-  , mhGDecodeJson
+module Data.Argonaut.Decode.Lenient
+  ( class LenientDecodeJson
+  , class LenientGDecodeJson
+  , lenientDecodeJson
+  , lenientGDecodeJson
   ) where
 
-import Prelude (class Bind, bind, flip, pure, ($), (<>))
+import Prelude (class Bind, bind, flip, ($), (<>))
 
-import Control.Alternative (class Alternative, empty)
+import Control.Plus (class Plus, empty)
 import Data.Argonaut.Core (Json)
 import Data.Argonaut.Decode.Class (class DecodeJson, decodeJson)
 import Data.Argonaut.Utils (reportJson)
@@ -27,29 +27,29 @@ import Type.Row
   , kind RowList
   )
 
-class MhGDecodeJson f (r :: # Type) (l :: RowList) | l -> r where
-  mhGDecodeJson :: Object Json -> RLProxy l -> f (Record r)
+class LenientGDecodeJson f (r :: # Type) (l :: RowList) | l -> r where
+  lenientGDecodeJson :: Object Json -> RLProxy l -> f (Record r)
 
-instance mhGDecodeJsonNil
+instance lenientGDecodeJsonNil
   :: Status f
-  => MhGDecodeJson f () Nil where
-  mhGDecodeJson _ _ = report {}
+  => LenientGDecodeJson f () Nil where
+  lenientGDecodeJson _ _ = report {}
 
-instance mhGDecodeJsonCons_Alternative
-  :: ( Alternative f
-     , Bind g
+instance lenientGDecodeJsonCons_Plus
+  :: ( Bind g
      , Cons s (f v) rTail r
      , DecodeJson (f v)
-     , MhGDecodeJson g rTail tail
+     , LenientGDecodeJson g rTail tail
      , IsSymbol s
      , Lacks s rTail
+     , Plus f
      , Status g
      )
-  => MhGDecodeJson g r (Cons s (f v) tail) where
-  mhGDecodeJson object _ = do
+  => LenientGDecodeJson g r (Cons s (f v) tail) where
+  lenientGDecodeJson object _ = do
     let sProxy = SProxy :: SProxy s
     let fieldName = reflectSymbol sProxy
-    rest <- mhGDecodeJson object (RLProxy :: RLProxy tail)
+    rest <- lenientGDecodeJson object (RLProxy :: RLProxy tail)
     case lookup fieldName object of
       Just jsonVal ->
         case decodeJson jsonVal of
@@ -58,20 +58,20 @@ instance mhGDecodeJsonCons_Alternative
       Nothing ->
         report $ insert sProxy empty rest
 
-else instance mhGDecodeJsonCons_nonAlternative
+else instance lenientGDecodeJsonCons_nonPlus
   :: ( Bind g
      , Cons s v rTail r
      , DecodeJson v
-     , MhGDecodeJson g rTail tail
+     , LenientGDecodeJson g rTail tail
      , IsSymbol s
      , Lacks s rTail
      , Status g
      )
-  => MhGDecodeJson g r (Cons s v tail) where
-  mhGDecodeJson object _ = do
+  => LenientGDecodeJson g r (Cons s v tail) where
+  lenientGDecodeJson object _ = do
     let sProxy = SProxy :: SProxy s
     let fieldName = reflectSymbol sProxy
-    rest <- mhGDecodeJson object (RLProxy :: RLProxy tail)
+    rest <- lenientGDecodeJson object (RLProxy :: RLProxy tail)
     case lookup fieldName object of
       Just jsonVal ->
         case decodeJson jsonVal of
@@ -80,13 +80,13 @@ else instance mhGDecodeJsonCons_nonAlternative
       Nothing ->
         reportError $ "JSON was missing expected field: " <> fieldName
 
-class MhDecodeJson f a where
-  mhDecodeJson :: Json -> f a
+class LenientDecodeJson f a where
+  lenientDecodeJson :: Json -> f a
 
-instance mhDecodeJsonRecord
-  :: ( MhGDecodeJson f r l
+instance lenientDecodeJsonRecord
+  :: ( LenientGDecodeJson f r l
      , RowToList r l
      , Status f
      )
-  => MhDecodeJson f (Record r) where
-  mhDecodeJson = reportJson $ flip mhGDecodeJson (RLProxy :: RLProxy l)
+  => LenientDecodeJson f (Record r) where
+  lenientDecodeJson = reportJson $ flip lenientGDecodeJson (RLProxy :: RLProxy l)

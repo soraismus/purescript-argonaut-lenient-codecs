@@ -2,7 +2,7 @@ module Data.Argonaut.Decode.Flex where
 
 import Prelude (class Bind, bind, flip, ($))
 
-import Control.Alternative (class Alternative, empty)
+import Control.Plus (class Plus, empty)
 import Data.Argonaut.Core (Json)
 import Data.Argonaut.Decode.Cases
 import Data.Argonaut.Decode.Class
@@ -45,13 +45,13 @@ instance flexGDecodeJsonNil
   flexGDecodeJson _ _ = report {}
 
 instance flexGDecodeJsonCons
-  :: ( Alternative f
-     , Bind g
+  :: ( Bind g
      , Cons s (f v) rTail r
      , DecodeJson (f v)
      , FlexGDecodeJson g rTail tail
      , IsSymbol s
      , Lacks s rTail
+     , Plus f
      , Status g
      )
   => FlexGDecodeJson g r (Cons s (f v) tail) where
@@ -139,8 +139,7 @@ instance __flexDecodeJsonWithNil
   __flexDecodeJsonWith _ _ _ _ = report {}
 
 instance __flexDecodeJsonWithCons
-  :: ( Alternative f
-     , Bind g
+  :: ( Bind g
      , Cases g dl r
      , Cases g dl' r'
      , Cons s (f v) r' r
@@ -149,6 +148,7 @@ instance __flexDecodeJsonWithCons
      , IsSymbol s
      , Lacks s r'
      , Lacks s dr'
+     , Plus f
      , RowToList r l
      , RowToList r' l'
      , RowToList dr dl
