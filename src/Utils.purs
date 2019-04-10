@@ -1,5 +1,6 @@
 module Data.Argonaut.Utils
   ( getMissingFieldErrorMessage
+  , reportBuilderJson
   , reportJson
   , reportObject
   ) where
@@ -12,6 +13,7 @@ import Data.Either (Either(Left, Right))
 import Data.Maybe (Maybe(Just, Nothing))
 import Data.Status.Class (class Status, report, reportError)
 import Foreign.Object (Object)
+import Record.Builder (Builder)
 import Type.Data.RowList (RLProxy) -- Argonaut dependency
 import Type.Row (class RowToList)
 
@@ -21,6 +23,17 @@ notObjectErrorMessage = "Could not convert JSON to object"
 getMissingFieldErrorMessage :: String -> String
 getMissingFieldErrorMessage fieldName =
   "JSON was missing expected field: " <> fieldName
+
+reportBuilderJson
+  :: forall f r
+   . Status f
+  => (Object Json -> f (Builder {} (Record r)))
+  -> Json
+  -> f (Builder {} (Record r))
+reportBuilderJson f json =
+  case toObject json of
+    Just object -> f object
+    Nothing -> reportError notObjectErrorMessage
 
 reportJson
   :: forall f r

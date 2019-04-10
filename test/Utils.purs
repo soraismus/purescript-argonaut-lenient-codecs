@@ -4,7 +4,7 @@ import Data.Maybe (Maybe(Just))
 import Data.Status.Class (class Status, isError, summarize)
 import Data.Tuple (Tuple(Tuple), uncurry)
 import Test.Unit (Test)
-import Test.Unit.Assert as Assert
+import Test.Unit.Assert (assert) as Assert
 import Type.Row (type (+), RProxy(RProxy))
 
 type TypeRep_0 (f :: Type -> Type) r = ( a0 :: Int, a1 :: Int | r )
