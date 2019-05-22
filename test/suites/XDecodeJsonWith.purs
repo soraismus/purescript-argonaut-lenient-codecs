@@ -1,15 +1,15 @@
 module Test.Suites.XDecodeJsonWith
-  ( _suite
+  ( suitex
   ) where
 
 import Prelude (discard)
 
-import Test.Suites.XDecodeJsonWith.Array (_suite) as Array
-import Test.Suites.XDecodeJsonWith.Maybe (_suite) as Maybe
+import Test.Suites.XDecodeJsonWith.Array (suitex) as Array
+import Test.Suites.XDecodeJsonWith.Maybe (suitex) as Maybe
 import Test.Unit (TestSuite, suite)
 
-_suite :: TestSuite
-_suite =
+suitex :: TestSuite
+suitex =
   suite "xDecodeJsonWith" do
-    Maybe._suite
-    Array._suite
+    Maybe.suitex
+    Array.suitex

@@ -1,5 +1,5 @@
 module Test.Suites.DecodeJsonWithPrime.Maybe
-  ( _suite
+  ( suitex
   ) where
 
 import Prelude (discard, otherwise, ($), (==), (<>))
@@ -23,8 +23,8 @@ import Test.Utils
   , val1
   )
 
-_suite :: TestSuite
-_suite =
+suitex :: TestSuite
+suitex =
   suite "Maybe" do
     suite "Type_4" do
       suite ("Override " <> "a2") do

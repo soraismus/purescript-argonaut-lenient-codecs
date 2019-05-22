@@ -1,15 +1,15 @@
 module Test.Suites.DecodeJsonPer
-  ( _suite
+  ( suitex
   ) where
 
 import Prelude (discard)
 
-import Test.Suites.DecodeJsonPer.Array (_suite) as Array
-import Test.Suites.DecodeJsonPer.Maybe (_suite) as Maybe
+import Test.Suites.DecodeJsonPer.Array (suitex) as Array
+import Test.Suites.DecodeJsonPer.Maybe (suitex) as Maybe
 import Test.Unit (TestSuite, suite)
 
-_suite :: TestSuite
-_suite =
+suitex :: TestSuite
+suitex =
   suite "decodeJsonPer" do
-    Maybe._suite
-    Array._suite
+    Maybe.suitex
+    Array.suitex

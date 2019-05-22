@@ -1,5 +1,5 @@
 module Test.Suites.DecodeJsonWith.Array
-  ( _suite
+  ( suitex
   ) where
 
 import Prelude (discard, otherwise, ($), (==), (<>))
@@ -20,8 +20,8 @@ import Test.Utils
   , val5
   )
 
-_suite :: TestSuite
-_suite =
+suitex :: TestSuite
+suitex =
   suite "Array" do
     suite "Type_6" do
       suite ("Override " <> "a2") do

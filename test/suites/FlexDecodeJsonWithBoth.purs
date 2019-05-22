@@ -1,15 +1,15 @@
 module Test.Suites.FlexDecodeJsonWithBoth
-  ( _suite
+  ( suitex
   ) where
 
 import Prelude (discard)
 
-import Test.Suites.FlexDecodeJsonWithBoth.Array (_suite) as Array
-import Test.Suites.FlexDecodeJsonWithBoth.Maybe (_suite) as Maybe
+import Test.Suites.FlexDecodeJsonWithBoth.Array (suitex) as Array
+import Test.Suites.FlexDecodeJsonWithBoth.Maybe (suitex) as Maybe
 import Test.Unit (TestSuite, suite)
 
-_suite :: TestSuite
-_suite =
+suitex :: TestSuite
+suitex =
   suite "flexDecodeJsonWithBoth" do
-    Maybe._suite
-    Array._suite
+    Maybe.suitex
+    Array.suitex

@@ -1,5 +1,5 @@
 module Test.Suites.XDecodeJsonWith.Maybe
-  ( _suite
+  ( suitex
   ) where
 
 import Prelude (discard, mod, show, ($), (==), (<$>))
@@ -18,8 +18,8 @@ import Test.Utils
   , val2
   )
 
-_suite :: TestSuite
-_suite =
+suitex :: TestSuite
+suitex =
   suite "Maybe" do
     suite "Type_2" do
       suite "val2" do

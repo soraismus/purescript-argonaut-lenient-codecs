@@ -1,5 +1,5 @@
 module Test.Suites.DecodeJsonPer.Maybe
-  ( _suite
+  ( suitex
   ) where
 
 import Prelude (discard, otherwise, ($), (==))
@@ -29,8 +29,8 @@ import Test.Utils
   , val2
   )
 
-_suite :: TestSuite
-_suite =
+suitex :: TestSuite
+suitex =
   suite "Maybe" do
     suite "Type_0" do
       suite "val0" do

@@ -5,25 +5,25 @@ module Test.Main
 import Prelude (Unit, discard)
 
 import Effect (Effect)
-import Test.Suites.DecodeJsonPer (_suite) as DecodeJsonPer
-import Test.Suites.DecodeJsonWith (_suite) as DecodeJsonWith
-import Test.Suites.DecodeJsonWithPrime (_suite) as DecodeJsonWith'
-import Test.Suites.FlexDecodeJson (_suite) as FlexDecodeJson
-import Test.Suites.FlexDecodeJsonWith (_suite) as FlexDecodeJsonWith
-import Test.Suites.FlexDecodeJsonWithBoth (_suite) as FlexDecodeJsonWithBoth
-import Test.Suites.TolerantDecodeJson (_suite) as TolerantDecodeJson
-import Test.Suites.XDecodeJsonWith (_suite) as XDecodeJsonWith
-import Test.Suites.XFlexDecodeJsonWithBoth (_suite) as XFlexDecodeJsonWithBoth
+import Test.Suites.DecodeJsonPer (suitex) as DecodeJsonPer
+import Test.Suites.DecodeJsonWith (suitex) as DecodeJsonWith
+import Test.Suites.DecodeJsonWithPrime (suitex) as DecodeJsonWith'
+import Test.Suites.FlexDecodeJson (suitex) as FlexDecodeJson
+import Test.Suites.FlexDecodeJsonWith (suitex) as FlexDecodeJsonWith
+import Test.Suites.FlexDecodeJsonWithBoth (suitex) as FlexDecodeJsonWithBoth
+import Test.Suites.TolerantDecodeJson (suitex) as TolerantDecodeJson
+import Test.Suites.XDecodeJsonWith (suitex) as XDecodeJsonWith
+import Test.Suites.XFlexDecodeJsonWithBoth (suitex) as XFlexDecodeJsonWithBoth
 import Test.Unit.Main (runTest)
 
 main :: Effect Unit
 main = runTest do
-  DecodeJsonPer._suite
-  DecodeJsonWith._suite
-  DecodeJsonWith'._suite
-  FlexDecodeJson._suite
-  FlexDecodeJsonWith._suite
-  FlexDecodeJsonWithBoth._suite
-  TolerantDecodeJson._suite
-  XDecodeJsonWith._suite
-  XFlexDecodeJsonWithBoth._suite
+  DecodeJsonPer.suitex
+  DecodeJsonWith.suitex
+  DecodeJsonWith'.suitex
+  FlexDecodeJson.suitex
+  FlexDecodeJsonWith.suitex
+  FlexDecodeJsonWithBoth.suitex
+  TolerantDecodeJson.suitex
+  XDecodeJsonWith.suitex
+  XFlexDecodeJsonWithBoth.suitex

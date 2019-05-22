@@ -1,5 +1,5 @@
 module Test.Suites.FlexDecodeJsonWith.Maybe
-  ( _suite
+  ( suitex
   ) where
 
 import Prelude
@@ -23,8 +23,8 @@ import Test.Utils
   , val2
   )
 
-_suite :: TestSuite
-_suite =
+suitex :: TestSuite
+suitex =
   suite "Maybe" do
     suite "Type_1" do
       suite "val0" do

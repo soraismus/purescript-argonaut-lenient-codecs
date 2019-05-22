@@ -1,5 +1,5 @@
 module Test.Suites.XDecodeJsonWith.Array
-  ( _suite
+  ( suitex
   ) where
 
 import Prelude (discard, mod, show, ($), (==), (<$>))
@@ -17,8 +17,8 @@ import Test.Utils
   , val5
   )
 
-_suite :: TestSuite
-_suite =
+suitex :: TestSuite
+suitex =
   suite "Array" do
     suite "Type_7" do
       suite "val5" do

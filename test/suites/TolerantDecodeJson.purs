@@ -1,15 +1,15 @@
 module Test.Suites.TolerantDecodeJson
-  ( _suite
+  ( suitex
   ) where
 
 import Prelude (discard)
 
-import Test.Suites.TolerantDecodeJson.Array (_suite) as Array
-import Test.Suites.TolerantDecodeJson.Maybe (_suite) as Maybe
+import Test.Suites.TolerantDecodeJson.Array (suitex) as Array
+import Test.Suites.TolerantDecodeJson.Maybe (suitex) as Maybe
 import Test.Unit (TestSuite, suite)
 
-_suite :: TestSuite
-_suite =
+suitex :: TestSuite
+suitex =
   suite "tolerantDecodeJson" do
-    Maybe._suite
-    Array._suite
+    Maybe.suitex
+    Array.suitex

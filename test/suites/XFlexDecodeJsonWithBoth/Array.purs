@@ -1,5 +1,5 @@
 module Test.Suites.XFlexDecodeJsonWithBoth.Array
-  ( _suite
+  ( suitex
   ) where
 
 import Prelude (($), (==))
@@ -17,8 +17,8 @@ import Test.Utils
   , val5
   )
 
-_suite :: TestSuite
-_suite =
+suitex :: TestSuite
+suitex =
   suite "Array" do
     suite "xFlexDecodeJsonWithBoth" do
       suite "Type_7" do
