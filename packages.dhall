@@ -114,7 +114,16 @@ let mkPackage =
 let upstream =
       https://raw.githubusercontent.com/purescript/package-sets/psc-0.12.3-20190315/src/packages.dhall sha256:08714bc666b16834f0f4cf86d408745ce005c43e3343821e4c3864ef28709177
 
-let overrides = {=}
+let overrides =
+  { argonaut-codecs =
+      upstream.argonaut-codecs // { version = "v6.0.2" }
+  , contravariant =
+      upstream.contravariant // { version = "v4.0.1" }
+  , lists =
+      upstream.lists // { version = "v5.4.1" }
+  , ordered-collections =
+      upstream.ordered-collections // { version = "v1.6.1" }
+  }
 
 let additions = {=}
 
