@@ -7,7 +7,7 @@ import Prelude (Unit, discard)
 import Effect (Effect)
 import Test.Suites.DecodeJsonPer (suitex) as DecodeJsonPer
 import Test.Suites.DecodeJsonWith (suitex) as DecodeJsonWith
-import Test.Suites.DecodeJsonWithPrime (suitex) as DecodeJsonWith'
+import Test.Suites.DecodeJsonWithPrime (suitex) as DecodeJsonWithPrime
 import Test.Suites.FlexDecodeJson (suitex) as FlexDecodeJson
 import Test.Suites.FlexDecodeJsonWith (suitex) as FlexDecodeJsonWith
 import Test.Suites.FlexDecodeJsonWithBoth (suitex) as FlexDecodeJsonWithBoth
@@ -20,7 +20,7 @@ main :: Effect Unit
 main = runTest do
   DecodeJsonPer.suitex
   DecodeJsonWith.suitex
-  DecodeJsonWith'.suitex
+  DecodeJsonWithPrime.suitex
   FlexDecodeJson.suitex
   FlexDecodeJsonWith.suitex
   FlexDecodeJsonWithBoth.suitex
