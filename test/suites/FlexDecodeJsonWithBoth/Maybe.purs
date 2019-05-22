@@ -9,25 +9,24 @@ import Data.Argonaut.Encode (encodeJson)
 import Data.Either (Either(Right))
 import Data.Maybe (Maybe(Just, Nothing))
 import Test.Unit (TestSuite, suite, test)
-import Test.Utils
-  ( Type_2
-  , assert
-  , check
-  , doesntMeet
-  , fails
-  , val0
-  , val1
-  , val2
-  )
+import Test.Utils (assert, check, fails, withErrorMsg)
 
 suitex :: TestSuite
 suitex =
   suite "Maybe" do
-    suite "Type_2" do
-      suite "val0" do
+    suite "{ a0 :: Int, a1 :: Int, a2 :: Maybe Int, a3 :: Maybe String, a4 :: Maybe Boolean }" do
+      suite "{ a0: 0, a1: 1 }" do
         test "#0" do
           let
-            result :: Either String Type_2
+            result
+              :: Either
+                  String
+                  { a0 :: Int
+                  , a1 :: Int
+                  , a2 :: Maybe Int
+                  , a3 :: Maybe String
+                  , a4 :: Maybe Boolean
+                  }
             result =
               flexDecodeJsonWithBoth
                 { a0: \json -> Right 100
@@ -37,8 +36,8 @@ suitex =
                 , a3: \json -> Right $ Just "bye"
                 , a4: \json -> Right $ Just false
                 }
-                (encodeJson val0)
-          assert $ check result doesntMeet
+                (encodeJson { a0: 0, a1: 1 })
+          assert $ check result withErrorMsg
             (_ == { a0: 100
                   , a1: 101
                   , a2: Nothing
@@ -47,37 +46,69 @@ suitex =
                   })
         test "#1" do
           let
-            result :: Either String Type_2
+            result
+              :: Either
+                  String
+                  { a0 :: Int
+                  , a1 :: Int
+                  , a2 :: Maybe Int
+                  , a3 :: Maybe String
+                  , a4 :: Maybe Boolean
+                  }
             result =
               flexDecodeJsonWithBoth
                 {}
                 { a2: \json -> Right $ Just 102
                 , a4: \json -> Right $ Just false
                 }
-                (encodeJson val0)
+                (encodeJson { a0: 0, a1: 1 })
           assert $ fails result
         test "#2" do
           let
-            result :: Either String Type_2
+            result
+              :: Either
+                  String
+                  { a0 :: Int
+                  , a1 :: Int
+                  , a2 :: Maybe Int
+                  , a3 :: Maybe String
+                  , a4 :: Maybe Boolean
+                  }
             result =
               flexDecodeJsonWithBoth
                 {}
                 { a2: \json -> Right $ Just 102 }
-                (encodeJson val0)
+                (encodeJson { a0: 0, a1: 1 })
           assert $ fails result
         test "#3" do
           let
-            result :: Either String Type_2
+            result
+              :: Either
+                  String
+                  { a0 :: Int
+                  , a1 :: Int
+                  , a2 :: Maybe Int
+                  , a3 :: Maybe String
+                  , a4 :: Maybe Boolean
+                  }
             result =
               flexDecodeJsonWithBoth
                 { a4: \json -> Right $ Just false }
                 { a2: \json -> Right $ Just 102 }
-                (encodeJson val0)
+                (encodeJson { a0: 0, a1: 1 })
           assert $ fails result
-        suite "val1" do
+        suite "{ a0: 0, a1: 1, a2: Just 2 }" do
           test "#0" do
             let
-              result :: Either String Type_2
+              result
+                :: Either
+                    String
+                    { a0 :: Int
+                    , a1 :: Int
+                    , a2 :: Maybe Int
+                    , a3 :: Maybe String
+                    , a4 :: Maybe Boolean
+                    }
               result =
                 flexDecodeJsonWithBoth
                   { a0: \json -> Right 100
@@ -87,8 +118,8 @@ suitex =
                   , a3: \json -> Right $ Just "bye"
                   , a4: \json -> Right $ Just false
                   }
-                  (encodeJson val1)
-            assert $ check result doesntMeet
+                  (encodeJson { a0: 0, a1: 1, a2: Just 2 })
+            assert $ check result withErrorMsg
               (_ == { a0: 100
                     , a1: 101
                     , a2: Just 102
@@ -97,18 +128,34 @@ suitex =
                     })
           test "#1" do
             let
-              result :: Either String Type_2
+              result
+                :: Either
+                    String
+                    { a0 :: Int
+                    , a1 :: Int
+                    , a2 :: Maybe Int
+                    , a3 :: Maybe String
+                    , a4 :: Maybe Boolean
+                    }
               result =
                 flexDecodeJsonWithBoth
                   {}
                   { a2: \json -> Right $ Just 102
                   , a4: \json -> Right $ Just false
                   }
-                  (encodeJson val1)
+                  (encodeJson { a0: 0, a1: 1, a2: Just 2 })
             assert $ fails result
           test "#2" do
             let
-              result :: Either String Type_2
+              result
+                :: Either
+                    String
+                    { a0 :: Int
+                    , a1 :: Int
+                    , a2 :: Maybe Int
+                    , a3 :: Maybe String
+                    , a4 :: Maybe Boolean
+                    }
               result =
                 flexDecodeJsonWithBoth
                   {}
@@ -116,18 +163,26 @@ suitex =
                   , a3: \json -> Right $ Just "bye"
                   , a4: \json -> Right $ Just false
                   }
-                  (encodeJson val1)
-            assert $ check result doesntMeet
-              (_ == { a0: val1.a0
-                    , a1: val1.a1
+                  (encodeJson { a0: 0, a1: 1, a2: Just 2 })
+            assert $ check result withErrorMsg
+              (_ == { a0: { a0: 0, a1: 1, a2: Just 2 }.a0
+                    , a1: { a0: 0, a1: 1, a2: Just 2 }.a1
                     , a2: Just 102
                     , a3: Nothing
                     , a4: Nothing
                     })
-        suite "val2" do
+        suite "{ a0: 0, a1: 1, a2: Just 2, a3: Just \"hello\", a4: Just true }" do
           test "#0" do
             let
-              result :: Either String Type_2
+              result
+                :: Either
+                    String
+                    { a0 :: Int
+                    , a1 :: Int
+                    , a2 :: Maybe Int
+                    , a3 :: Maybe String
+                    , a4 :: Maybe Boolean
+                    }
               result =
                 flexDecodeJsonWithBoth
                   { a0: \json -> Right 100
@@ -137,8 +192,13 @@ suitex =
                   , a3: \json -> Right $ Just "bye"
                   , a4: \json -> Right $ Just false
                   }
-                  (encodeJson val2)
-            assert $ check result doesntMeet
+                  (encodeJson { a0: 0
+                              , a1: 1
+                              , a2: Just 2
+                              , a3: Just "hello"
+                              , a4: Just true
+                              })
+            assert $ check result withErrorMsg
               (_ == { a0: 100
                     , a1: 101
                     , a2: Just 102
@@ -147,7 +207,15 @@ suitex =
                     })
           test "#1" do
             let
-              result :: Either String Type_2
+              result
+                :: Either
+                    String
+                    { a0 :: Int
+                    , a1 :: Int
+                    , a2 :: Maybe Int
+                    , a3 :: Maybe String
+                    , a4 :: Maybe Boolean
+                    }
               result =
                 flexDecodeJsonWithBoth
                   { a0: \json -> Right 100
@@ -157,8 +225,13 @@ suitex =
                   { a2: \json -> Right $ Just 102
                   , a4: \json -> Right $ Just false
                   }
-                  (encodeJson val2)
-            assert $ check result doesntMeet
+                  (encodeJson { a0: 0
+                              , a1: 1
+                              , a2: Just 2
+                              , a3: Just "hello"
+                              , a4: Just true
+                              })
+            assert $ check result withErrorMsg
               (_ == { a0: 100
                     , a1: 101
                     , a2: Just 102
@@ -167,18 +240,31 @@ suitex =
                     })
           test "#2" do
             let
-              result :: Either String Type_2
+              result
+                :: Either
+                    String
+                    { a0 :: Int
+                    , a1 :: Int
+                    , a2 :: Maybe Int
+                    , a3 :: Maybe String
+                    , a4 :: Maybe Boolean
+                    }
               result =
                 flexDecodeJsonWithBoth
                   {}
                   { a2: \json -> Right $ Just 102
                   , a4: \json -> Right $ Just false
                   }
-                  (encodeJson val2)
-            assert $ check result doesntMeet
-              (_ == { a0: val2.a0
-                    , a1: val2.a1
+                  (encodeJson { a0: 0
+                              , a1: 1
+                              , a2: Just 2
+                              , a3: Just "hello"
+                              , a4: Just true
+                              })
+            assert $ check result withErrorMsg
+              (_ == { a0: 0
+                    , a1: 1
                     , a2: Just 102
-                    , a3: val2.a3
+                    , a3: Just "hello"
                     , a4: Just false
                     })

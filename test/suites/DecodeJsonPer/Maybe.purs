@@ -12,209 +12,222 @@ import Data.Either (Either(Left, Right))
 import Data.Maybe (Maybe(Just, Nothing))
 import Test.Unit (TestSuite, suite, test)
 import Test.Utils
-  ( Type_0
-  , Type_1
-  , Type_2
-  , assert
+  ( assert
   , capriciousFailure
   , check
   , check'
-  , doesntMeet
   , fails
   , notVal0
   , notVal1
-  , notVal2
-  , val0
-  , val1
-  , val2
+  , withErrorMsg
   )
 
 suitex :: TestSuite
 suitex =
   suite "Maybe" do
-    suite "Type_0" do
-      suite "val0" do
+    suite "{ a0 :: Int, a1 :: Int }" do
+      suite "{ a0: 0, a1: 1 }" do
         test "#0" do
           let
-            result :: Either String Type_0
+            result :: Either String { a0 :: Int, a1 :: Int }
             result =
               decodeJsonPer
                 { a0: \json -> Right 100
                 , a1: \json -> Right 101
                 }
-                (encodeJson val0)
-          assert $ check result doesntMeet
+                (encodeJson { a0: 0, a1: 1 })
+          assert $ check result withErrorMsg
             (_ == { a0: 100, a1: 101 })
         test "#1" do
           let
-            result :: Either String Type_0
+            result :: Either String { a0 :: Int, a1 :: Int }
             result =
               decodeJsonPer
                 { a0: \json -> Left capriciousFailure
                 , a1: \json -> Right 101
                 }
-                (encodeJson val0)
+                (encodeJson { a0: 0, a1: 1 })
           assert $ fails result
         test "#2" do
           let
-            result :: Either String Type_0
+            result :: Either String { a0 :: Int, a1 :: Int }
             result =
               decodeJsonPer
                 { a0: \json -> Right 100
                 , a1: \json -> Left capriciousFailure
                 }
-                (encodeJson val0)
+                (encodeJson { a0: 0, a1: 1 })
           assert $ fails result
         test "#3" do
           let
-            result :: Either String Type_0
+            result :: Either String { a0 :: Int, a1 :: Int }
             result =
               decodeJsonPer
                 { a0: decodeJson'
                 , a1: decodeJson'
                 }
-                (encodeJson val0)
+                (encodeJson { a0: 0, a1: 1 })
               where
               decodeJson' :: Json -> Either String Int
               decodeJson' = decodeJson
-          assert $ check' result (_ == val0) otherwise notVal0
-      suite "val1" do
+          assert $ check' result (_ == { a0: 0, a1: 1 }) otherwise notVal0
+      suite "{ a0: 0, a1: 1, a2: Just 2 }" do
         test "#0" do
           let
-            result :: Either String Type_0
+            result :: Either String { a0 :: Int, a1 :: Int }
             result =
               decodeJsonPer
                 { a0: \json -> Right 100
                 , a1: \json -> Right 101
                 }
-                (encodeJson val1)
-          assert $ check result doesntMeet
+                (encodeJson { a0: 0, a1: 1, a2: Just 2 })
+          assert $ check result withErrorMsg
             (_ == { a0: 100, a1: 101 })
         test "#1" do
           let
-            result :: Either String Type_0
+            result :: Either String { a0 :: Int, a1 :: Int }
             result =
               decodeJsonPer
                 { a0: \json -> Left capriciousFailure
                 , a1: \json -> Right 101
                 }
-                (encodeJson val1)
+                (encodeJson { a0: 0, a1: 1, a2: Just 2 })
           assert $ fails result
         test "#2" do
           let
-            result :: Either String Type_0
+            result :: Either String { a0 :: Int, a1 :: Int }
             result =
               decodeJsonPer
                 { a0: \json -> Right 100
                 , a1: \json -> Left capriciousFailure
                 }
-                (encodeJson val1)
+                (encodeJson { a0: 0, a1: 1, a2: Just 2 })
           assert $ fails result
         test "#3" do
           let
-            result :: Either String Type_0
+            result :: Either String { a0 :: Int, a1 :: Int }
             result =
               decodeJsonPer
                 { a0: decodeJson'
                 , a1: decodeJson'
                 }
-                (encodeJson val1)
+                (encodeJson { a0: 0, a1: 1, a2: Just 2 })
               where
               decodeJson' :: Json -> Either String Int
               decodeJson' = decodeJson
-          assert $ check result doesntMeet
-            (_ == { a0: val1.a0, a1: val1.a1 })
-      suite "val2" do
+          assert $ check result withErrorMsg
+            (_ == { a0: 0, a1: 1 })
+      suite "{ a0: 0, a1: 1, a2: Just 2, a3: Just \"hello\", a4: Just true }" do
         test "#0" do
           let
-            result :: Either String Type_0
+            result :: Either String { a0 :: Int, a1 :: Int }
             result =
               decodeJsonPer
                 { a0: \json -> Right 100
                 , a1: \json -> Right 101
                 }
-                (encodeJson val2)
-          assert $ check result doesntMeet
+                (encodeJson { a0: 0
+                            , a1: 1
+                            , a2: Just 2
+                            , a3: Just "hello"
+                            , a4: Just true
+                            })
+          assert $ check result withErrorMsg
             (_ == { a0: 100, a1: 101 })
         test "#1" do
           let
-            result :: Either String Type_0
+            result :: Either String { a0 :: Int, a1 :: Int }
             result =
               decodeJsonPer
                 { a0: \json -> Left capriciousFailure
                 , a1: \json -> Right 101
                 }
-                (encodeJson val2)
+                (encodeJson { a0: 0
+                            , a1: 1
+                            , a2: Just 2
+                            , a3: Just "hello"
+                            , a4: Just true
+                            })
           assert $ fails result
         test "#2" do
           let
-            result :: Either String Type_0
+            result :: Either String { a0 :: Int, a1 :: Int }
             result =
               decodeJsonPer
                 { a0: \json -> Right 100
                 , a1: \json -> Left capriciousFailure
                 }
-                (encodeJson val2)
+                (encodeJson { a0: 0
+                            , a1: 1
+                            , a2: Just 2
+                            , a3: Just "hello"
+                            , a4: Just true
+                            })
           assert $ fails result
         test "#3" do
           let
-            result :: Either String Type_0
+            result :: Either String { a0 :: Int, a1 :: Int }
             result =
               decodeJsonPer
                 { a0: decodeJson'
                 , a1: decodeJson'
                 }
-                (encodeJson val2)
+                (encodeJson { a0: 0
+                            , a1: 1
+                            , a2: Just 2
+                            , a3: Just "hello"
+                            , a4: Just true
+                            })
               where
               decodeJson' :: Json -> Either String Int
               decodeJson' = decodeJson
-          assert $ check result doesntMeet
-            (_ == { a0: val2.a0, a1: val2.a1 })
-    suite "Type_1" do
-      suite "val0" do
+          assert $ check result withErrorMsg
+            (_ == { a0: 0, a1: 1 })
+    suite "{ a0 :: Int, a1 :: Int, a2 :: Maybe Int }" do
+      suite "{ a0: 0, a1: 1 }" do
         test "#0" do
           let
-            result :: Either String Type_1
+            result :: Either String { a0 :: Int, a1 :: Int, a2 :: Maybe Int }
             result =
               decodeJsonPer
                 { a0: \json -> Right 100
                 , a1: \json -> Right 101
                 , a2: \json -> Right $ Just 102
                 }
-                (encodeJson val0)
+                (encodeJson { a0: 0, a1: 1 })
           assert $ fails result
         test "#1" do
           let
-            result :: Either String Type_1
+            result :: Either String { a0 :: Int, a1 :: Int, a2 :: Maybe Int }
             result =
               decodeJsonPer
                 { a0: \json -> Left capriciousFailure
                 , a1: \json -> Right 101
                 , a2: \json -> Right $ Just 102
                 }
-                (encodeJson val0)
+                (encodeJson { a0: 0, a1: 1 })
           assert $ fails result
         test "#2" do
           let
-            result :: Either String Type_1
+            result :: Either String { a0 :: Int, a1 :: Int, a2 :: Maybe Int }
             result =
               decodeJsonPer
                 { a0: \json -> Right 100
                 , a1: \json -> Right 101
                 , a2: \json -> Left capriciousFailure
                 }
-                (encodeJson val0)
+                (encodeJson { a0: 0, a1: 1 })
           assert $ fails result
         test "#3" do
           let
-            result :: Either String Type_1
+            result :: Either String { a0 :: Int, a1 :: Int, a2 :: Maybe Int }
             result =
               decodeJsonPer
                 { a0: decodeJsonInt
                 , a1: decodeJsonInt
                 , a2: decodeJsonMaybeInt
                 }
-                (encodeJson val0)
+                (encodeJson { a0: 0, a1: 1 })
               where
               decodeJsonInt :: Json -> Either String Int
               decodeJsonInt = decodeJson
@@ -223,147 +236,180 @@ suitex =
           assert $ fails result
         test "#4" do
           let
-            result :: Either String Type_1
+            result :: Either String { a0 :: Int, a1 :: Int, a2 :: Maybe Int }
             result =
               decodeJsonPer
                 { a0: \json -> Right 100
                 , a1: \json -> Right 101
                 , a2: \json -> Right $ Nothing
                 }
-                (encodeJson val0)
+                (encodeJson { a0: 0, a1: 1 })
           assert $ fails result
-      suite "val1" do
+      suite "{ a0: 0, a1: 1, a2: Just 2 }" do
         test "#0" do
           let
-            result :: Either String Type_1
+            result :: Either String { a0 :: Int, a1 :: Int, a2 :: Maybe Int }
             result =
               decodeJsonPer
                 { a0: \json -> Right 100
                 , a1: \json -> Right 101
                 , a2: \json -> Right $ Just 102
                 }
-                (encodeJson val1)
-          assert $ check result doesntMeet
+                (encodeJson { a0: 0, a1: 1, a2: Just 2 })
+          assert $ check result withErrorMsg
             (_ == { a0: 100, a1: 101, a2: Just 102 })
         test "#1" do
           let
-            result :: Either String Type_1
+            result :: Either String { a0 :: Int, a1 :: Int, a2 :: Maybe Int }
             result =
               decodeJsonPer
                 { a0: \json -> Left capriciousFailure
                 , a1: \json -> Right 101
                 , a2: \json -> Right $ Just 102
                 }
-                (encodeJson val1)
+                (encodeJson { a0: 0, a1: 1, a2: Just 2 })
           assert $ fails result
         test "#2" do
           let
-            result :: Either String Type_1
+            result :: Either String { a0 :: Int, a1 :: Int, a2 :: Maybe Int }
             result =
               decodeJsonPer
                 { a0: \json -> Right 100
                 , a1: \json -> Right 101
                 , a2: \json -> Left capriciousFailure
                 }
-                (encodeJson val1)
+                (encodeJson { a0: 0, a1: 1, a2: Just 2 })
           assert $ fails result
         test "#3" do
           let
-            result :: Either String Type_1
+            result :: Either String { a0 :: Int, a1 :: Int, a2 :: Maybe Int }
             result =
               decodeJsonPer
                 { a0: decodeJsonInt
                 , a1: decodeJsonInt
                 , a2: decodeJsonMaybeInt
                 }
-                (encodeJson val1)
+                (encodeJson { a0: 0, a1: 1, a2: Just 2 })
               where
               decodeJsonInt :: Json -> Either String Int
               decodeJsonInt = decodeJson
               decodeJsonMaybeInt :: Json -> Either String (Maybe Int)
               decodeJsonMaybeInt = decodeJson
-          assert $ check' result (_ == val1) otherwise notVal1
+          assert $ check' result (_ == { a0: 0, a1: 1, a2: Just 2 }) otherwise notVal1
         test "#4" do
           let
-            result :: Either String Type_1
+            result :: Either String { a0 :: Int, a1 :: Int, a2 :: Maybe Int }
             result =
               decodeJsonPer
                 { a0: \json -> Right 100
                 , a1: \json -> Right 101
                 , a2: \json -> Right $ Nothing
                 }
-                (encodeJson val1)
-          assert $ check result doesntMeet
+                (encodeJson { a0: 0, a1: 1, a2: Just 2 })
+          assert $ check result withErrorMsg
             (_ == { a0: 100, a1: 101, a2: Nothing })
-      suite "val2" do
+      suite "{ a0: 0, a1: 1, a2: Just 2, a3: Just \"hello\", a4: Just true }" do
         test "#0" do
           let
-            result :: Either String Type_1
+            result :: Either String { a0 :: Int, a1 :: Int, a2 :: Maybe Int }
             result =
               decodeJsonPer
                 { a0: \json -> Right 100
                 , a1: \json -> Right 101
                 , a2: \json -> Right $ Just 102
                 }
-                (encodeJson val2)
-          assert $ check result doesntMeet
+                (encodeJson { a0: 0
+                            , a1: 1
+                            , a2: Just 2
+                            , a3: Just "hello"
+                            , a4: Just true
+                            })
+          assert $ check result withErrorMsg
             (_ == { a0: 100, a1: 101, a2: Just 102 })
         test "#1" do
           let
-            result :: Either String Type_1
+            result :: Either String { a0 :: Int, a1 :: Int, a2 :: Maybe Int }
             result =
               decodeJsonPer
                 { a0: \json -> Left capriciousFailure
                 , a1: \json -> Right 101
                 , a2: \json -> Right $ Just 102
                 }
-                (encodeJson val2)
+                (encodeJson { a0: 0
+                            , a1: 1
+                            , a2: Just 2
+                            , a3: Just "hello"
+                            , a4: Just true
+                            })
           assert $ fails result
         test "#2" do
           let
-            result :: Either String Type_1
+            result :: Either String { a0 :: Int, a1 :: Int, a2 :: Maybe Int }
             result =
               decodeJsonPer
                 { a0: \json -> Right 100
                 , a1: \json -> Right 101
                 , a2: \json -> Left capriciousFailure
                 }
-                (encodeJson val2)
+                (encodeJson { a0: 0
+                            , a1: 1
+                            , a2: Just 2
+                            , a3: Just "hello"
+                            , a4: Just true
+                            })
           assert $ fails result
         test "#3" do
           let
-            result :: Either String Type_1
+            result :: Either String { a0 :: Int, a1 :: Int, a2 :: Maybe Int }
             result =
               decodeJsonPer
                 { a0: decodeJsonInt
                 , a1: decodeJsonInt
                 , a2: decodeJsonMaybeInt
                 }
-                (encodeJson val2)
+                (encodeJson { a0: 0
+                            , a1: 1
+                            , a2: Just 2
+                            , a3: Just "hello"
+                            , a4: Just true
+                            })
               where
               decodeJsonInt :: Json -> Either String Int
               decodeJsonInt = decodeJson
               decodeJsonMaybeInt :: Json -> Either String (Maybe Int)
               decodeJsonMaybeInt = decodeJson
-          assert $ check result doesntMeet
-            (_ == { a0: val2.a0, a1: val2.a1, a2: val2.a2 })
+          assert $ check result withErrorMsg
+            (_ == { a0: 0, a1: 1, a2: Just 2 })
         test "#4" do
           let
-            result :: Either String Type_1
+            result :: Either String { a0 :: Int, a1 :: Int, a2 :: Maybe Int }
             result =
               decodeJsonPer
                 { a0: \json -> Right 100
                 , a1: \json -> Right 101
                 , a2: \json -> Right $ Nothing
                 }
-                (encodeJson val2)
-          assert $ check result doesntMeet
+                (encodeJson { a0: 0
+                            , a1: 1
+                            , a2: Just 2
+                            , a3: Just "hello"
+                            , a4: Just true
+                            })
+          assert $ check result withErrorMsg
             (_ == { a0: 100, a1: 101, a2: Nothing })
-    suite "Type_2" do
-      suite "val0" do
+    suite "{ a0 :: Int, a1 :: Int, a2 :: Maybe Int, a3 :: Maybe String, a4 :: Maybe Boolean }" do
+      suite "{ a0: 0, a1: 1 }" do
         test "#0" do
           let
-            result :: Either String Type_2
+            result
+              :: Either
+                  String
+                  { a0 :: Int
+                  , a1 :: Int
+                  , a2 :: Maybe Int
+                  , a3 :: Maybe String
+                  , a4 :: Maybe Boolean
+                  }
             result =
               decodeJsonPer
                 { a0: \json -> Right 100
@@ -372,11 +418,19 @@ suitex =
                 , a3: \json -> Right $ Just "bye"
                 , a4: \json -> Right $ Just false
                 }
-                (encodeJson val0)
+                (encodeJson { a0: 0, a1: 1 })
           assert $ fails result
         test "#1" do
           let
-            result :: Either String Type_2
+            result
+              :: Either
+                  String
+                  { a0 :: Int
+                  , a1 :: Int
+                  , a2 :: Maybe Int
+                  , a3 :: Maybe String
+                  , a4 :: Maybe Boolean
+                  }
             result =
               decodeJsonPer
                 { a0: \json -> Left capriciousFailure
@@ -385,11 +439,19 @@ suitex =
                 , a3: \json -> Right $ Just "bye"
                 , a4: \json -> Right $ Just false
                 }
-                (encodeJson val0)
+                (encodeJson { a0: 0, a1: 1 })
           assert $ fails result
         test "#2" do
           let
-            result :: Either String Type_2
+            result
+              :: Either
+                  String
+                  { a0 :: Int
+                  , a1 :: Int
+                  , a2 :: Maybe Int
+                  , a3 :: Maybe String
+                  , a4 :: Maybe Boolean
+                  }
             result =
               decodeJsonPer
                 { a0: \json -> Right 100
@@ -398,11 +460,19 @@ suitex =
                 , a3: \json -> Right $ Just "bye"
                 , a4: \json -> Right $ Just false
                 }
-                (encodeJson val0)
+                (encodeJson { a0: 0, a1: 1 })
           assert $ fails result
         test "#3" do
           let
-            result :: Either String Type_2
+            result
+              :: Either
+                  String
+                  { a0 :: Int
+                  , a1 :: Int
+                  , a2 :: Maybe Int
+                  , a3 :: Maybe String
+                  , a4 :: Maybe Boolean
+                  }
             result =
               decodeJsonPer
                 { a0: decodeJsonInt
@@ -411,7 +481,7 @@ suitex =
                 , a3: decodeJsonMaybeString
                 , a4: decodeJsonMaybeBoolean
                 }
-                (encodeJson val0)
+                (encodeJson { a0: 0, a1: 1 })
               where
               decodeJsonInt :: Json -> Either String Int
               decodeJsonInt = decodeJson
@@ -424,7 +494,15 @@ suitex =
           assert $ fails result
         test "#4" do
           let
-            result :: Either String Type_2
+            result
+              :: Either
+                  String
+                  { a0 :: Int
+                  , a1 :: Int
+                  , a2 :: Maybe Int
+                  , a3 :: Maybe String
+                  , a4 :: Maybe Boolean
+                  }
             result =
               decodeJsonPer
                 { a0: \json -> Right 100
@@ -433,12 +511,20 @@ suitex =
                 , a3: \json -> Right $ Just "bye"
                 , a4: \json -> Right $ Just false
                 }
-                (encodeJson val0)
+                (encodeJson { a0: 0, a1: 1 })
           assert $ fails result
-      suite "val1" do
+      suite "{ a0: 0, a1: 1, a2: Just 2 }" do
         test "#0" do
           let
-            result :: Either String Type_2
+            result
+              :: Either
+                  String
+                  { a0 :: Int
+                  , a1 :: Int
+                  , a2 :: Maybe Int
+                  , a3 :: Maybe String
+                  , a4 :: Maybe Boolean
+                  }
             result =
               decodeJsonPer
                 { a0: \json -> Right 100
@@ -447,11 +533,19 @@ suitex =
                 , a3: \json -> Right $ Just "bye"
                 , a4: \json -> Right $ Just false
                 }
-                (encodeJson val1)
+                (encodeJson { a0: 0, a1: 1, a2: Just 2 })
           assert $ fails result
         test "#1" do
           let
-            result :: Either String Type_2
+            result
+              :: Either
+                  String
+                  { a0 :: Int
+                  , a1 :: Int
+                  , a2 :: Maybe Int
+                  , a3 :: Maybe String
+                  , a4 :: Maybe Boolean
+                  }
             result =
               decodeJsonPer
                 { a0: \json -> Left capriciousFailure
@@ -460,11 +554,19 @@ suitex =
                 , a3: \json -> Right $ Just "bye"
                 , a4: \json -> Right $ Just false
                 }
-                (encodeJson val1)
+                (encodeJson { a0: 0, a1: 1, a2: Just 2 })
           assert $ fails result
         test "#2" do
           let
-            result :: Either String Type_2
+            result
+              :: Either
+                  String
+                  { a0 :: Int
+                  , a1 :: Int
+                  , a2 :: Maybe Int
+                  , a3 :: Maybe String
+                  , a4 :: Maybe Boolean
+                  }
             result =
               decodeJsonPer
                 { a0: \json -> Right 100
@@ -473,11 +575,19 @@ suitex =
                 , a3: \json -> Right $ Just "bye"
                 , a4: \json -> Right $ Just false
                 }
-                (encodeJson val1)
+                (encodeJson { a0: 0, a1: 1, a2: Just 2 })
           assert $ fails result
         test "#3" do
           let
-            result :: Either String Type_2
+            result
+              :: Either
+                  String
+                  { a0 :: Int
+                  , a1 :: Int
+                  , a2 :: Maybe Int
+                  , a3 :: Maybe String
+                  , a4 :: Maybe Boolean
+                  }
             result =
               decodeJsonPer
                 { a0: decodeJsonInt
@@ -486,7 +596,7 @@ suitex =
                 , a3: decodeJsonMaybeString
                 , a4: decodeJsonMaybeBoolean
                 }
-                (encodeJson val1)
+                (encodeJson { a0: 0, a1: 1, a2: Just 2 })
               where
               decodeJsonInt :: Json -> Either String Int
               decodeJsonInt = decodeJson
@@ -499,7 +609,15 @@ suitex =
           assert $ fails result
         test "#4" do
           let
-            result :: Either String Type_2
+            result
+              :: Either
+                  String
+                  { a0 :: Int
+                  , a1 :: Int
+                  , a2 :: Maybe Int
+                  , a3 :: Maybe String
+                  , a4 :: Maybe Boolean
+                  }
             result =
               decodeJsonPer
                 { a0: \json -> Right 100
@@ -508,12 +626,20 @@ suitex =
                 , a3: \json -> Right $ Just "bye"
                 , a4: \json -> Right $ Just false
                 }
-                (encodeJson val1)
+                (encodeJson { a0: 0, a1: 1, a2: Just 2 })
           assert $ fails result
-      suite "val2" do
+      suite "{ a0: 0, a1: 1, a2: Just 2, a3: Just \"hello\", a4: Just true }" do
         test "#0" do
           let
-            result :: Either String Type_2
+            result
+              :: Either
+                  String
+                  { a0 :: Int
+                  , a1 :: Int
+                  , a2 :: Maybe Int
+                  , a3 :: Maybe String
+                  , a4 :: Maybe Boolean
+                  }
             result =
               decodeJsonPer
                 { a0: \json -> Right 100
@@ -522,8 +648,13 @@ suitex =
                 , a3: \json -> Right $ Just "bye"
                 , a4: \json -> Right $ Just false
                 }
-                (encodeJson val2)
-          assert $ check result doesntMeet
+                (encodeJson { a0: 0
+                            , a1: 1
+                            , a2: Just 2
+                            , a3: Just "hello"
+                            , a4: Just true
+                            })
+          assert $ check result withErrorMsg
             (_ == { a0: 100
                   , a1: 101
                   , a2: Just 102
@@ -532,7 +663,15 @@ suitex =
                   })
         test "#1" do
           let
-            result :: Either String Type_2
+            result
+              :: Either
+                  String
+                  { a0 :: Int
+                  , a1 :: Int
+                  , a2 :: Maybe Int
+                  , a3 :: Maybe String
+                  , a4 :: Maybe Boolean
+                  }
             result =
               decodeJsonPer
                 { a0: \json -> Left capriciousFailure
@@ -541,11 +680,24 @@ suitex =
                 , a3: \json -> Right $ Just "bye"
                 , a4: \json -> Right $ Just false
                 }
-                (encodeJson val2)
+                (encodeJson { a0: 0
+                            , a1: 1
+                            , a2: Just 2
+                            , a3: Just "hello"
+                            , a4: Just true
+                            })
           assert $ fails result
         test "#2" do
           let
-            result :: Either String Type_2
+            result
+              :: Either
+                  String
+                  { a0 :: Int
+                  , a1 :: Int
+                  , a2 :: Maybe Int
+                  , a3 :: Maybe String
+                  , a4 :: Maybe Boolean
+                  }
             result =
               decodeJsonPer
                 { a0: \json -> Right 100
@@ -554,11 +706,24 @@ suitex =
                 , a3: \json -> Right $ Just "bye"
                 , a4: \json -> Right $ Just false
                 }
-                (encodeJson val2)
+                (encodeJson { a0: 0
+                            , a1: 1
+                            , a2: Just 2
+                            , a3: Just "hello"
+                            , a4: Just true
+                            })
           assert $ fails result
         test "#3" do
           let
-            result :: Either String Type_2
+            result
+              :: Either
+                  String
+                  { a0 :: Int
+                  , a1 :: Int
+                  , a2 :: Maybe Int
+                  , a3 :: Maybe String
+                  , a4 :: Maybe Boolean
+                  }
             result =
               decodeJsonPer
                 { a0: decodeJsonInt
@@ -567,7 +732,12 @@ suitex =
                 , a3: decodeJsonMaybeString
                 , a4: decodeJsonMaybeBoolean
                 }
-                (encodeJson val2)
+                (encodeJson { a0: 0
+                            , a1: 1
+                            , a2: Just 2
+                            , a3: Just "hello"
+                            , a4: Just true
+                            })
               where
               decodeJsonInt :: Json -> Either String Int
               decodeJsonInt = decodeJson
@@ -577,10 +747,24 @@ suitex =
               decodeJsonMaybeString = decodeJson
               decodeJsonMaybeBoolean :: Json -> Either String (Maybe Boolean)
               decodeJsonMaybeBoolean = decodeJson
-          assert $ check' result (_ == val2) otherwise notVal2
+          assert $ check result withErrorMsg
+            (_ == { a0: 0
+                  , a1: 1
+                  , a2: Just 2
+                  , a3: Just "hello"
+                  , a4: Just true
+                  })
         test "#4" do
           let
-            result :: Either String Type_2
+            result
+              :: Either
+                  String
+                  { a0 :: Int
+                  , a1 :: Int
+                  , a2 :: Maybe Int
+                  , a3 :: Maybe String
+                  , a4 :: Maybe Boolean
+                  }
             result =
               decodeJsonPer
                 { a0: \json -> Right 100
@@ -589,8 +773,13 @@ suitex =
                 , a3: \json -> Right $ Just "bye"
                 , a4: \json -> Right $ Just false
                 }
-                (encodeJson val2)
-          assert $ check result doesntMeet
+                (encodeJson { a0: 0
+                            , a1: 1
+                            , a2: Just 2
+                            , a3: Just "hello"
+                            , a4: Just true
+                            })
+          assert $ check result withErrorMsg
             (_ == { a0: 100
                   , a1: 101
                   , a2: Nothing

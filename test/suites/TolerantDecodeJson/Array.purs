@@ -9,95 +9,141 @@ import Data.Argonaut.Encode (encodeJson)
 import Data.Either (Either)
 import Test.Unit (TestSuite, suite, test)
 import Test.Utils
-  ( Type_5
-  , Type_6
-  , Type_7
-  , Type_8
-  , assert
+  ( assert
   , check
   , check'
-  , doesntMeet
   , notVal3
   , notVal4
   , notVal5
-  , val3
-  , val4
-  , val5
+  , withErrorMsg
   )
 
 suitex :: TestSuite
 suitex =
   suite "Array" do
-    suite "Type_5" do
-      test "val3" do
+    suite "{ a0 :: Int, a1 :: Int }" do
+      test "{ a0: 0, a1: 1 }" do
         let
-          result :: Either String Type_5
-          result = tolerantDecodeJson (encodeJson val3)
-        assert $ check' result (_ == val3) otherwise notVal3
-      test "val4" do
+          result :: Either String { a0 :: Int, a1 :: Int }
+          result = tolerantDecodeJson (encodeJson { a0: 0, a1: 1 })
+        assert $ check' result (_ == { a0: 0, a1: 1 }) otherwise notVal3
+      test "{ a0: 0, a1: 1, a2: [2] }" do
         let
-          result :: Either String Type_5
-          result = tolerantDecodeJson (encodeJson val4)
-        assert $ check result doesntMeet
-          (_ == { a0: val4.a0, a1: val4.a1 })
-      test "val5" do
+          result :: Either String { a0 :: Int, a1 :: Int }
+          result = tolerantDecodeJson (encodeJson { a0: 0, a1: 1, a2: [2] })
+        assert $ check result withErrorMsg
+          (_ == { a0: 0, a1: 1 })
+      test "{ a0: 0, a1: 1, a2: [2], a3: [\"hello\"], a4: [true] }" do
         let
-          result :: Either String Type_5
-          result = tolerantDecodeJson (encodeJson val5)
-        assert $ check result doesntMeet
-          (_ == { a0: val5.a0, a1: val5.a1 })
-    suite "Type_6" do
-      test "val3" do
+          result :: Either String { a0 :: Int, a1 :: Int }
+          result =
+            tolerantDecodeJson
+              (encodeJson { a0: 0, a1: 1, a2: [2], a3: ["hello"], a4: [true] })
+        assert $ check result withErrorMsg
+          (_ == { a0: 0, a1: 1 })
+    suite "{ a0 :: Int, a1 :: Int, a2 :: Array Int }" do
+      test "{ a0: 0, a1: 1 }" do
         let
-          result :: Either String Type_6
-          result = tolerantDecodeJson (encodeJson val3)
-        assert $ check result doesntMeet
-          (_ == { a0: val3.a0, a1: val3.a1, a2: [] })
-      test "val4" do
+          result :: Either String { a0 :: Int, a1 :: Int, a2 :: Array Int }
+          result = tolerantDecodeJson (encodeJson { a0: 0, a1: 1 })
+        assert $ check result withErrorMsg
+          (_ == { a0: 0, a1: 1, a2: [] })
+      test "{ a0: 0, a1: 1, a2: [2] }" do
         let
-          result :: Either String Type_6
-          result = tolerantDecodeJson (encodeJson val4)
-        assert $ check' result (_ == val4) otherwise notVal4
-      test "val5" do
+          result :: Either String { a0 :: Int, a1 :: Int, a2 :: Array Int }
+          result = tolerantDecodeJson (encodeJson { a0: 0, a1: 1, a2: [2] })
+        assert $ check' result (_ == { a0: 0, a1: 1, a2: [2] }) otherwise notVal4
+      test "{ a0: 0, a1: 1, a2: [2], a3: [\"hello\"], a4: [true] }" do
         let
-          result :: Either String Type_6
-          result = tolerantDecodeJson (encodeJson val5)
-        assert $ check result doesntMeet
-          (_ == { a0: val5.a0, a1: val5.a1, a2: val5.a2 })
-    suite "Type_7" do
-      test "val3" do
+          result :: Either String { a0 :: Int, a1 :: Int, a2 :: Array Int }
+          result =
+            tolerantDecodeJson
+              (encodeJson { a0: 0, a1: 1, a2: [2], a3: ["hello"], a4: [true] })
+        assert $ check result withErrorMsg
+          (_ == { a0: 0, a1: 1, a2: [2] })
+    suite "{ a0 :: Int, a1 :: Int, a2 :: Array Int, a3 :: Array String, a4 :: Array Boolean }" do
+      test "{ a0: 0, a1: 1 }" do
         let
-          result :: Either String Type_7
-          result = tolerantDecodeJson (encodeJson val3)
-        assert $ check result doesntMeet
-          (_ == { a0: val3.a0, a1: val3.a1, a2: [], a3: [], a4: [] })
-      test "val4" do
+          result
+            :: Either
+                String
+                { a0 :: Int
+                , a1 :: Int
+                , a2 :: Array Int
+                , a3 :: Array String
+                , a4 :: Array Boolean
+                }
+          result = tolerantDecodeJson (encodeJson { a0: 0, a1: 1 })
+        assert $ check result withErrorMsg
+          (_ == { a0: 0, a1: 1, a2: [], a3: [], a4: [] })
+      test "{ a0: 0, a1: 1, a2: [2] }" do
         let
-          result :: Either String Type_7
-          result = tolerantDecodeJson (encodeJson val4)
-        assert $ check result doesntMeet
-          (_ == { a0: val4.a0, a1: val4.a1, a2: val4.a2, a3: [], a4: [] })
-      test "val5" do
+          result
+            :: Either
+                String
+                { a0 :: Int
+                , a1 :: Int
+                , a2 :: Array Int
+                , a3 :: Array String
+                , a4 :: Array Boolean
+                }
+          result = tolerantDecodeJson (encodeJson { a0: 0, a1: 1, a2: [2] })
+        assert $ check result withErrorMsg
+          (_ == { a0: 0, a1: 1, a2: [2], a3: [], a4: [] })
+      test "{ a0: 0, a1: 1, a2: [2], a3: [\"hello\"], a4: [true] }" do
         let
-          result :: Either String Type_7
-          result = tolerantDecodeJson (encodeJson val5)
-        assert $ check' result (_ == val5) otherwise notVal5
-    suite "Type_8" do
-      test "val3" do
+          result
+            :: Either
+                String
+                { a0 :: Int
+                , a1 :: Int
+                , a2 :: Array Int
+                , a3 :: Array String
+                , a4 :: Array Boolean
+                }
+          result =
+            tolerantDecodeJson
+              (encodeJson { a0: 0, a1: 1, a2: [2], a3: ["hello"], a4: [true] })
+        assert $
+          check'
+            result (_ == { a0: 0, a1: 1, a2: [2], a3: ["hello"], a4: [true] })
+            otherwise notVal5
+    suite "{ a2 :: Array Int, a3 :: Array String, a4 :: Array Boolean }" do
+      test "{ a0: 0, a1: 1 }" do
         let
-          result :: Either String Type_8
-          result = tolerantDecodeJson (encodeJson val3)
-        assert $ check result doesntMeet
+          result
+            :: Either
+                String
+                { a2 :: Array Int
+                , a3 :: Array String
+                , a4 :: Array Boolean
+                }
+          result = tolerantDecodeJson (encodeJson { a0: 0, a1: 1 })
+        assert $ check result withErrorMsg
           (_ == { a2: [], a3: [], a4: [] })
-      test "val4" do
+      test "{ a0: 0, a1: 1, a2: [2] }" do
         let
-          result :: Either String Type_8
-          result = tolerantDecodeJson (encodeJson val4)
-        assert $ check result doesntMeet
-          (_ == { a2: val4.a2, a3: [], a4: [] })
-      test "val5" do
+          result
+            :: Either
+                String
+                { a2 :: Array Int
+                , a3 :: Array String
+                , a4 :: Array Boolean
+                }
+          result = tolerantDecodeJson (encodeJson { a0: 0, a1: 1, a2: [2] })
+        assert $ check result withErrorMsg
+          (_ == { a2: [2], a3: [], a4: [] })
+      test "{ a0: 0, a1: 1, a2: [2], a3: [\"hello\"], a4: [true] }" do
         let
-          result :: Either String Type_8
-          result = tolerantDecodeJson (encodeJson val5)
-        assert $ check result doesntMeet
-          (_ == { a2: val5.a2, a3: val5.a3, a4: val5.a4 })
+          result
+            :: Either
+                String
+                { a2 :: Array Int
+                , a3 :: Array String
+                , a4 :: Array Boolean
+                }
+          result =
+            tolerantDecodeJson
+              (encodeJson { a0: 0, a1: 1, a2: [2], a3: ["hello"], a4: [true] })
+        assert $ check result withErrorMsg
+          (_ == { a2: [2], a3: ["hello"], a4: [true] })
